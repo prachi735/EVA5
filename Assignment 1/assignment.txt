@@ -1,0 +1,135 @@
+### What are Channels and Kernels (according to EVA)?
+
+Channels in an image contain usefull information in a context. The number of channels and information available in the channel would depend on the image format. In a grayscale image we have single channel that contains intenstiy of the color at a pixel but in an RGB image we have 3 channels for each color channel.
+
+Kernels are multidimensional array of weights that are applied to a part of data to compute dot product of weights & data. The kernel extracts an feature and produces a feature map as output.
+
+
+### Why should we (nearly) always use 3x3 kernels?
+
+3x3 cross presents below advantages:
+1. smaller filters need lesser parameter calculation then bigger kernels
+2. using 3x3 we can create a filter of any size my addling mulitple layers, for ex. by using 2 layers of 3x3 we get 5x5 and so on.
+3 instead of using an even number like 2 or 4 we use odd number of 3 because it preserves the symmetry in the information in the receptive field.
+4 also many architectures are based on 3x3 so 3x3 Kernels are more accelarated then other in most of the hardware available today
+
+
+
+### How many times to we need to perform 3x3 convolutions operations to reach close to 1x1 from 199x199 (type each layer output like 199x199 > 197x197...)
+
+Conv Op 1:    199 x 199 -> 197 x 197
+Conv Op 2:    197 x 197 -> 195 x 195
+Conv Op 3:    195 x 195 -> 193 x 193
+Conv Op 4:    193 x 193 -> 191 x 191
+Conv Op 5:    191 x 191 -> 189 x 189
+Conv Op 6:    189 x 189 -> 187 x 187
+Conv Op 7:    187 x 187 -> 185 x 185
+Conv Op 8:    185 x 185 -> 183 x 183
+Conv Op 9:    183 x 183 -> 181 x 181
+Conv Op 10:    181 x 181 -> 179 x 179
+Conv Op 11:    179 x 179 -> 177 x 177
+Conv Op 12:    177 x 177 -> 175 x 175
+Conv Op 13:    175 x 175 -> 173 x 173
+Conv Op 14:    173 x 173 -> 171 x 171
+Conv Op 15:    171 x 171 -> 169 x 169
+Conv Op 16:    169 x 169 -> 167 x 167
+Conv Op 17:    167 x 167 -> 165 x 165
+Conv Op 18:    165 x 165 -> 163 x 163
+Conv Op 19:    163 x 163 -> 161 x 161
+Conv Op 20:    161 x 161 -> 159 x 159
+Conv Op 21:    159 x 159 -> 157 x 157
+Conv Op 22:    157 x 157 -> 155 x 155
+Conv Op 23:    155 x 155 -> 153 x 153
+Conv Op 24:    153 x 153 -> 151 x 151
+Conv Op 25:    151 x 151 -> 149 x 149
+Conv Op 26:    149 x 149 -> 147 x 147
+Conv Op 27:    147 x 147 -> 145 x 145
+Conv Op 28:    145 x 145 -> 143 x 143
+Conv Op 29:    143 x 143 -> 141 x 141
+Conv Op 30:    141 x 141 -> 139 x 139
+Conv Op 31:    139 x 139 -> 137 x 137
+Conv Op 32:    137 x 137 -> 135 x 135
+Conv Op 33:    135 x 135 -> 133 x 133
+Conv Op 34:    133 x 133 -> 131 x 131
+Conv Op 35:    131 x 131 -> 129 x 129
+Conv Op 36:    129 x 129 -> 127 x 127
+Conv Op 37:    127 x 127 -> 125 x 125
+Conv Op 38:    125 x 125 -> 123 x 123
+Conv Op 39:    123 x 123 -> 121 x 121
+Conv Op 40:    121 x 121 -> 119 x 119
+Conv Op 41:    119 x 119 -> 117 x 117
+Conv Op 42:    117 x 117 -> 115 x 115
+Conv Op 43:    115 x 115 -> 113 x 113
+Conv Op 44:    113 x 113 -> 111 x 111
+Conv Op 45:    111 x 111 -> 109 x 109
+Conv Op 46:    109 x 109 -> 107 x 107
+Conv Op 47:    107 x 107 -> 105 x 105
+Conv Op 48:    105 x 105 -> 103 x 103
+Conv Op 49:    103 x 103 -> 101 x 101
+Conv Op 50:    101 x 101 -> 99 x 99
+Conv Op 51:    99 x 99 -> 97 x 97
+Conv Op 52:    97 x 97 -> 95 x 95
+Conv Op 53:    95 x 95 -> 93 x 93
+Conv Op 54:    93 x 93 -> 91 x 91
+Conv Op 55:    91 x 91 -> 89 x 89
+Conv Op 56:    89 x 89 -> 87 x 87
+Conv Op 57:    87 x 87 -> 85 x 85
+Conv Op 58:    85 x 85 -> 83 x 83
+Conv Op 59:    83 x 83 -> 81 x 81
+Conv Op 60:    81 x 81 -> 79 x 79
+Conv Op 61:    79 x 79 -> 77 x 77
+Conv Op 62:    77 x 77 -> 75 x 75
+Conv Op 63:    75 x 75 -> 73 x 73
+Conv Op 64:    73 x 73 -> 71 x 71
+Conv Op 65:    71 x 71 -> 69 x 69
+Conv Op 66:    69 x 69 -> 67 x 67
+Conv Op 67:    67 x 67 -> 65 x 65
+Conv Op 68:    65 x 65 -> 63 x 63
+Conv Op 69:    63 x 63 -> 61 x 61
+Conv Op 70:    61 x 61 -> 59 x 59
+Conv Op 71:    59 x 59 -> 57 x 57
+Conv Op 72:    57 x 57 -> 55 x 55
+Conv Op 73:    55 x 55 -> 53 x 53
+Conv Op 74:    53 x 53 -> 51 x 51
+Conv Op 75:    51 x 51 -> 49 x 49
+Conv Op 76:    49 x 49 -> 47 x 47
+Conv Op 77:    47 x 47 -> 45 x 45
+Conv Op 78:    45 x 45 -> 43 x 43
+Conv Op 79:    43 x 43 -> 41 x 41
+Conv Op 80:    41 x 41 -> 39 x 39
+Conv Op 81:    39 x 39 -> 37 x 37
+Conv Op 82:    37 x 37 -> 35 x 35
+Conv Op 83:    35 x 35 -> 33 x 33
+Conv Op 84:    33 x 33 -> 31 x 31
+Conv Op 85:    31 x 31 -> 29 x 29
+Conv Op 86:    29 x 29 -> 27 x 27
+Conv Op 87:    27 x 27 -> 25 x 25
+Conv Op 88:    25 x 25 -> 23 x 23
+Conv Op 89:    23 x 23 -> 21 x 21
+Conv Op 90:    21 x 21 -> 19 x 19
+Conv Op 91:    19 x 19 -> 17 x 17
+Conv Op 92:    17 x 17 -> 15 x 15
+Conv Op 93:    15 x 15 -> 13 x 13
+Conv Op 94:    13 x 13 -> 11 x 11
+Conv Op 95:    11 x 11 -> 9 x 9
+Conv Op 96:    9 x 9 -> 7 x 7
+Conv Op 97:    7 x 7 -> 5 x 5
+Conv Op 98:    5 x 5 -> 3 x 3
+Conv Op 99:    3 x 3 -> 1 x 1
+
+Thus as we can see here we need to apply 99 filters to reach size 1 as each filter reduces size by 2.
+
+### How are kernels initialized?
+
+kernels are initialized randomly. 
+During training the random values of the kernels are changed slightly in the right direction each time network goes through a batch of data
+
+
+### What happens during the training of a DNN?
+
+For DNN training below steps are followed:
+1. we created a NN with mulitple convolution layers
+2. each layer will have kernels initialized randomly
+3. After each convolution layer we get a larger receptive field
+4. The last convolution layer will be big enough receptive field that help us in determining the features on the input.
+5. If incorrect features have been identified we update our kernels and repeat the above steps, till we get right set of features.
