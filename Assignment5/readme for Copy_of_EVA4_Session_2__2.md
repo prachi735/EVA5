@@ -4,8 +4,9 @@ The model uses Pytorch's conv2d, batch normalization, dropout, adaptive average 
 Model achives it's best accuracy 99.41 of in 11th epoch. 
 
 Architecture of Model:
+----------------------------------------------------------------
         Layer (type)               Output Shape         Param #
-================================================================
+----------------------------------------------------------------
             Conv2d-1            [-1, 8, 26, 26]              80
        BatchNorm2d-2            [-1, 8, 26, 26]              16
            Dropout-3            [-1, 8, 26, 26]               0
@@ -25,8 +26,8 @@ Architecture of Model:
            Conv2d-17             [-1, 16, 6, 6]           2,320
       BatchNorm2d-18             [-1, 16, 6, 6]              32
            Conv2d-19             [-1, 10, 4, 4]           1,450
-AdaptiveAvgPool2d-20             [-1, 10, 1, 1]               0
-================================================================
+        AdaptiveAvgPool2d-20             [-1, 10, 1, 1]               0
+----------------------------------------------------------------
 Total params: 19,674
 Trainable params: 19,674
 Non-trainable params: 0
