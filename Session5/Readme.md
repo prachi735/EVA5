@@ -17,7 +17,7 @@ Best Test Accuracy: 99.86%
 
 # CODE 2
 ## Target: reduce parameters
-1. Changed the kernels and layers to reducce the number of parameters
+1. Changed the kernels and layers to reduce the number of parameters
 ## Result:
 Parameters: 7,690
 Best Train Accuracy: 98.62%
