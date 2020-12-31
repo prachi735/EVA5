@@ -8,12 +8,32 @@
 6. set training & test loop
 7. plot model result: accuracy & loss
 ## Result:
-Parameters: 77,562	
-Best Train Accuracy: 99.87%	
-Best Test Accuracy: 99.86%	
+Parameters: 7,690	
+Best Train Accuracy: 99.10%	
+Best Test Accuracy: 99.24%	
 ## Analysis: 
 1. the best train and test accuracy are similar 
 2. the number of parameters is too high"
+## Model Architecture
+Layer (type)|Output Shape|Param #|RF|kernel|stride|
+------|------|------|------|------|------|
+Conv2d-1|[-1,10,26,26]|90|3|3|1|
+ReLU-2|[-1,10,26,26]|0||||0
+Conv2d-3|[-1,10,24,24]|900|5|3|1|
+ReLU-4|[-1,10,24,24]|0||||0
+Conv2d-5|[-1,15,22,22]|1350|7|3|1|
+ReLU-6|[-1,15,22,22]|0||||1
+MaxPool2d-7|[-1,15,11,11]|0|8|2|2|0
+Conv2d-8|[-1,10,11,11]|150|8|1|1|
+ReLU-9|[-1,10,11,11]|0||||0
+Conv2d-10|[-1,10,9,9]|900|12|3|1|
+ReLU-11|[-1,10,9,9]|0||||0
+Conv2d-12|[-1,10,7,7]|900|16|3|1|
+ReLU-13|[-1,10,7,7]|0||||0
+Conv2d-14|[-1,10,5,5]|900|20|3|1|
+ReLU-15|[-1,10,5,5]|0||||0
+Conv2d-16|[-1,10,1,1]|2500|28|5|1|
+
 
 # CODE 2
 ## Target: reduce parameters
