@@ -67,7 +67,7 @@ AdaptiveMaxPool2d-29|	2|	0|	2|	1|	0|	1|	2|	28|	[-1, 10, 1, 1]|	0|
 Conv2d-30|	1|	0|	1|	1|	0|	1|	2|	28|	[-1, 10, 1, 1]|	100|
 
 Group:
-Prachi Singh
-Naman Shrimali
-Enamulla
-Amit Kumar Dubey
+1. Prachi Singh (prachi735@gmail.com)
+2. Naman Shrimali 
+3. M Enamulla, (enamulla.m@indivillage.in)
+4. Amit Kumar Dubey
