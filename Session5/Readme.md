@@ -9,93 +9,62 @@
 7. plot model result: accuracy & loss
 ## Result:
 Parameters: 7,690	
-Best Train Accuracy: 99.10%	
-Best Test Accuracy: 99.24%	
+Best Train Accuracy: 99.95%	
+Best Test Accuracy: 99.22%	
 ## Analysis: 
-1. the best train and test accuracy are similar 
-2. the number of parameters is too high"
-## Model Architecture
-Layer (type)|Output Shape|Param #|RF|kernel|stride|
-------|------|------|------|------|------|
-Conv2d-1|[-1,10,26,26]|90|3|3|1|
-ReLU-2|[-1,10,26,26]|0||||0
-Conv2d-3|[-1,10,24,24]|900|5|3|1|
-ReLU-4|[-1,10,24,24]|0||||0
-Conv2d-5|[-1,15,22,22]|1350|7|3|1|
-ReLU-6|[-1,15,22,22]|0||||1
-MaxPool2d-7|[-1,15,11,11]|0|8|2|2|0
-Conv2d-8|[-1,10,11,11]|150|8|1|1|
-ReLU-9|[-1,10,11,11]|0||||0
-Conv2d-10|[-1,10,9,9]|900|12|3|1|
-ReLU-11|[-1,10,9,9]|0||||0
-Conv2d-12|[-1,10,7,7]|900|16|3|1|
-ReLU-13|[-1,10,7,7]|0||||0
-Conv2d-14|[-1,10,5,5]|900|20|3|1|
-ReLU-15|[-1,10,5,5]|0||||0
-Conv2d-16|[-1,10,1,1]|2500|28|5|1|
-
+1. The model performs well but can further be improved by training the model harder
 
 # CODE 2
-## Target: reduce parameters
-1. Changed the kernels and layers to reduce the number of parameters
+## Target: Add GAP and regularization
+1. Added GAP in final layer
+2. Added Batch Norm after every convolution
+2. Increased the layes in model to boost it's capacity
 ## Result:
-Parameters: 7,690
-Best Train Accuracy: 98.62%
-Best Test Accuracy: 98.86%
+Parameters: 12,061
+Best Train Accuracy: 99.54%
+Best Test Accuracy: 99.71%
 ## Analysis:
-1. Training accuracy & test accuracy has decreased due to lesser parameters 
-2. Model has capability to improve by increasing training accuracy
+1. The training and test accuracy have incresed 
+2. The number of parameters is too high
 
 # CODE 3 
-## Target: batchnorm	
-Added the batchnorm after every convulution
+## Target: 	Reduce the number of parameters
+1. Reduced the number of kernels.
+2. Added extra layer to compensate for lesser numner of kernels
 ## Result:
-Parameters: 7,840	
-Best Train Accuracy: 99.51%
-Best Test Accuracy: 99.61%
+Parameters: 7,690	
+Best Train Accuracy: 99.29%
+Best Test Accuracy: 99.55%
 ## Analysis:
-1. model performs good after the 10th epoch
-2. we can try making model more efficient by introducing GAP
+1. model performs good from the 12th epoch
+2. the accuracy has decreased due to lesser number of parameters
 
 # CODE 4
-## Target: Regularization 
-Added dropout as regularization to push model even further and increase both train & test accuracy
+## Target: Improve the accuracy
+Added more lalyers and increased the number of kernels
 ## Result:
-Parameters: 7,840
-Best Train Accuracy: 98.97%
-Best Test Accuracy: 99.45%
+Parameters: 8,610
+Best Train Accuracy: 99.38%
+Best Test Accuracy: 99.57%
 ## Analysis: 
-The model has reduced slightly here,
-similare result were observed by adding gap layer, hence removed from final model
-
-# CODE 5
-## Target: data augmentation	
-Added data augmentation to make model more robust			
-## Result:
-Parameters: 7,840
-Best Train Accuracy: 98.93%
-Best Test Accuracy: 99.48%
-## Analysis:
-The model accuracy has not increased but that is expected as we have made it harder for the model to train.
-
+The model has slightly better accuracy now as we increased the capacity of the model.
 
 ### Final Model layer: Input, Output, Receptive Field
                     
-Layer	| Nin |	k	| p | s |	Nout | jout |	RF
------ |-----|---|---|---|----- |----- |---
-input|	28|	0|	0|	0|	|	1|	1|
-c1|	28|	3|	0|	1|	26|	1|	3|
-c2|	26|	3|	0|	1|	24|	1|	5|
-c3|	24|	3|	0|	1|	22|	1|	7|
-p1|	22|	2|	0|	2|	11|	2|	9|
-c4|	11|	1|	0|	1|	11|	2|	9|
-c5|	11|	3|	0|	1|	9|	2|	13|
-c6|	9|	3|	0|	1|	7|	2|	17|
-c7|	7|	3|	0|	1|	5|	2|	21|
-c8|	5|	5|	0|	1|	1|	2|	29|
+Layer|	N in|	p|	k|	s|	2p|	n out|	j|	r|	Output Shape|	Param #|
+-----|	-----|	-----|	-----|	-----|	-----|	-----|	-----|	-----|	-----|	-----|
+Conv2d-1|	28|	0|	3|	1|	|	28|	1|	|	[-1, 10, 26, 26]|	90|
+Conv2d-4|	28|	0|	3|	1|	0|	26|	1|	3|	[-1, 10, 24, 24]|	900|
+Conv2d-7|	26|	0|	3|	1|	0|	24|	1|	5|	[-1, 16, 22, 22]|	1440|
+Conv2d-10|	24|	0|	1|	1|	0|	24|	1|	5|	[-1, 10, 22, 22]|	160|
+MaxPool2d-13|	24|	0|	2|	2|	0|	12|	2|	6|	[-1, 10, 11, 11]|	0|
+Conv2d-14|	12|	0|	3|	1|	0|	10|	2|	10|	[-1, 10, 9, 9]|	900|
+Conv2d-17|	10|	0|	3|	1|	0|	8|	2|	14|	[-1, 16, 7, 7]|	1440|
+Conv2d-20|	8|	0|	3|	1|	0|	6|	2|	18|	[-1, 16, 5, 5]|	2304|
+Conv2d-23|	6|	0|	3|	1|	0|	4|	2|	22|	[-1, 10, 5, 5]|	160|
+Conv2d-26|	4|	0|	3|	1|	0|	2|	2|	26|	[-1, 10, 3, 3]|	900|
+AdaptiveMaxPool2d-29|	2|	0|	2|	1|	0|	1|	2|	28|	[-1, 10, 1, 1]|	0|
+Conv2d-30|	1|	0|	1|	1|	0|	1|	2|	28|	[-1, 10, 1, 1]|	100|
 
 Group:
-Chandan Kumar,
-Abhinav Rana,
-Harsha Vardhan,
 Prachi Singh
