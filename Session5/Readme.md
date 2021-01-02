@@ -68,3 +68,6 @@ Conv2d-30|	1|	0|	1|	1|	0|	1|	2|	28|	[-1, 10, 1, 1]|	100|
 
 Group:
 Prachi Singh
+Naman Shrimali
+Enamulla
+Amit Kumar Dubey
