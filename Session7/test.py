@@ -1,4 +1,6 @@
 import torch
+import torch.nn.functional as F
+
 def test(model, device, test_loader, test_losses, test_acc):
 
     model.eval()
