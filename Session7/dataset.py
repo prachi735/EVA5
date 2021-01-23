@@ -56,6 +56,6 @@ def get_data_stats(data):
 
 
 def get_data(data_loader):
-    dataiter = iter(train_loader)
+    dataiter = iter(data_loader)
     images, labels = dataiter.next()
     return images, lables
