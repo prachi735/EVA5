@@ -113,7 +113,7 @@ class Net(nn.Module):
         x = x.view(-1, 10)
         return F.log_softmax(x, dim=-1)
 
-def get_optimizer(loss_type):
+def get_optimizer(model.parameters(),loss_type):
     if loss_type == "L2":
         optimizer = optim.SGD(model.parameters(), lr=0.01,
                   momentum=0, weight_decay=0, nesterov=False)
