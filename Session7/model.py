@@ -70,7 +70,7 @@ class Net(nn.Module):
         )  # input_size = 26 output_size = 24 receptive_field = 5
 
         # TRANSITION BLOCK 2
-        self.pool1 = nn.Sequential(
+        self.pool2 = nn.Sequential(
             nn.MaxPool2d(2, 2))  # input_size = 24 output_size = 12 receptive_field =
 
         # CONVOLUTION BLOCK 3
@@ -82,7 +82,7 @@ class Net(nn.Module):
         )  # input_size = 12 output_size = 10 receptive_field = 5
 
         # TRANSITION BLOCK 3
-        self.pool1 = nn.Sequential(
+        self.pool3 = nn.Sequential(
             nn.MaxPool2d(2, 2))  # input_size = 24 output_size = 12 receptive_field =
 
         # CONVOLUTION BLOCK 4
@@ -95,8 +95,8 @@ class Net(nn.Module):
 
         
         # OUTPUT BLOCK with GAP
-        self.convblock10 = nn.Sequential(
-            nn.AdaptiveMaxPool2d((1, 1)),
+        self.output = nn.Sequential(
+            nn.AdaptiveAvgPool2d((1, 1)),
             nn.Conv2d(in_channels=10, out_channels=10,
                       kernel_size=(1, 1), padding=0, bias=False),
         )  # input_size = 5 output_size = 1  receptive_field = 29
@@ -105,10 +105,11 @@ class Net(nn.Module):
         x = self.convblock1(x)
         x = self.pool1(x)
         x = self.convblock2(x)
-        x = self.pool1(x)
+        x = self.pool2(x)
         x = self.convblock3(x)
-        x = self.pool1(x)
+        x = self.pool3(x)
         x = self.convblock4(x)
+        x = self.output(x)
         
         x = x.view(-1, 10)
         return F.log_softmax(x, dim=-1)
