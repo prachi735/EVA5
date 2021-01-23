@@ -110,15 +110,15 @@ class Net(nn.Module):
 
 def get_optimizer(loss_type):
     if loss_type == "L2":
-    optimizer = optim.SGD(model.parameters(), lr=0.01,
-                          momentum=0, weight_decay=0, nesterov=False)
-  else:
-    optimizer = optim.SGD(model.parameters(), lr= 0.01, momentum=0.9)
-  return optimizer
+        optimizer = optim.SGD(model.parameters(), lr=0.01,
+                            momentum=0, weight_decay=0, nesterov=False)
+    else:
+        optimizer = optim.SGD(model.parameters(), lr= 0.01, momentum=0.9)
+    
+    return optimizer
 
 
 def run_model(model, device, optimiser, EPOCHS=1, is_L1_loss=False, is_GBN=False, gbn_splits=2):
-
   train_losses = []
   train_acc = []
   test_losses = []
