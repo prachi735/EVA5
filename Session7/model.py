@@ -46,7 +46,7 @@ class GhostBatchNorm(BatchNorm):
 
 
 class Net(nn.Module):
-    def __init__(self, is_GBN=False, gbn_splits=2, in_c = 1,n1,n2,n3,n4):
+    def __init__(self, is_GBN=False, gbn_splits=2, in_c = 1,n1=16,n2=16,n3=16,n4=16):
         super(Net, self).__init__()
         
         # CONVOLUTION BLOCK 1
