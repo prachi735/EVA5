@@ -46,20 +46,20 @@ class GhostBatchNorm(BatchNorm):
 
 
 class Net(nn.Module):
-    def __init__(self, is_GBN=False, gbn_splits=2, in_c = 1,n1=16,n2=16,n3=16,n4=16,grp=512):
+    def __init__(self, is_GBN=False, gbn_splits=2, in_c = 1):
         super(Net, self).__init__()
         
         # CONVOLUTION BLOCK 1
         self.convblock1 = nn.Sequential(
-            nn.Conv2d(in_channels=in_c, out_channels=n1,
+            nn.Conv2d(in_channels=in_c, out_channels=16,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(n1, gbn_splits) if is_GBN else nn.BatchNorm2d(n1),
+            GhostBatchNorm(16, gbn_splits) if is_GBN else nn.BatchNorm2d(16),
             
-            nn.Conv2d(in_channels=n1, out_channels=n1,
+            nn.Conv2d(in_channels=16, out_channels=16,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(n1, gbn_splits) if is_GBN else nn.BatchNorm2d(n1)
+            GhostBatchNorm(16, gbn_splits) if is_GBN else nn.BatchNorm2d(16)
         )  # input_size = 28 output_size = 26 receptive_field = 3
 
         # TRANSITION BLOCK 1
@@ -68,15 +68,15 @@ class Net(nn.Module):
 
         # CONVOLUTION BLOCK 2 DSConnv
         self.convblock2 = nn.Sequential(
-            nn.Conv2d(in_channels=n1, out_channels=n2,
+            nn.Conv2d(in_channels=16, out_channels=32,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(n2, gbn_splits) if is_GBN else nn.BatchNorm2d(n2),
+            GhostBatchNorm(32, gbn_splits) if is_GBN else nn.BatchNorm2d(32),
             
-            nn.Conv2d(in_channels=n2, out_channels=n2,
+            nn.Conv2d(in_channels=32, out_channels=32,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(n2, gbn_splits) if is_GBN else nn.BatchNorm2d(n2)
+            GhostBatchNorm(32, gbn_splits) if is_GBN else nn.BatchNorm2d(32)
         )  # input_size = 26 output_size = 24 receptive_field = 5
 
         # TRANSITION BLOCK 2
@@ -85,15 +85,15 @@ class Net(nn.Module):
 
         # CONVOLUTION BLOCK 3 Dilated
         self.convblock3 = nn.Sequential(
-            nn.Conv2d(in_channels=n2, out_channels=n3,
+            nn.Conv2d(in_channels=32, out_channels=128,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(n3, gbn_splits) if is_GBN else nn.BatchNorm2d(n3),
+            GhostBatchNorm(128, gbn_splits) if is_GBN else nn.BatchNorm2d(128),
             
-            nn.Conv2d(in_channels=n3, out_channels=n3,
+            nn.Conv2d(in_channels=128, out_channels=128,
                       kernel_size=(3, 3), padding=1, bias=False,dilation=2),
             nn.ReLU(),
-            GhostBatchNorm(n3, gbn_splits) if is_GBN else nn.BatchNorm2d(n3)
+            GhostBatchNorm(128, gbn_splits) if is_GBN else nn.BatchNorm2d(128)
         )  # input_size = 12 output_size = 10 receptive_field = 5
 
         # TRANSITION BLOCK 3
@@ -102,22 +102,22 @@ class Net(nn.Module):
 
         # CONVOLUTION BLOCK 4
         self.convblock4 = nn.Sequential(
-            nn.Conv2d(in_channels=n3, out_channels=n4,
+            nn.Conv2d(in_channels=128, out_channels=256,
                       kernel_size=(1, 1), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(n4, gbn_splits) if is_GBN else nn.BatchNorm2d(n4),
+            GhostBatchNorm(256, gbn_splits) if is_GBN else nn.BatchNorm2d(256),
             
-            nn.Conv2d(in_channels=n4, out_channels=n4,
-                      kernel_size=(1, 1), padding=1, bias=False,groups=grp),
+            nn.Conv2d(in_channels=256, out_channels=256,
+                      kernel_size=(1, 1), padding=1, bias=False,groups=64),
             nn.ReLU(),
-            GhostBatchNorm(n4, gbn_splits) if is_GBN else nn.BatchNorm2d(n4)
+            GhostBatchNorm(256, gbn_splits) if is_GBN else nn.BatchNorm2d(256)
         )  # input_size = 12 output_size = 10 receptive_field = 5
 
         
         # OUTPUT BLOCK with GAP
         self.output = nn.Sequential(
             nn.AdaptiveAvgPool2d((1, 1)),
-            nn.Conv2d(in_channels=n4, out_channels=10,
+            nn.Conv2d(in_channels=256, out_channels=10,
                       kernel_size=(1, 1), padding=0, bias=False)
         )  # input_size = 5 output_size = 1  receptive_field = 29
 
