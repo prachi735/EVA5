@@ -50,6 +50,5 @@ def plot_results(train_losses,train_acc,test_losses,test_acc):
 
     for i in data:
         ax = axs[axs_pos[i]]
-        ax.plot(data[i],label=d)
-        ax.legend(bbox_to_anchor=(.8, -.05),ncol=3)#,#bbox_transform=ax.transAxes)
+        ax.plot(data[i])
         ax.set_title(i)
