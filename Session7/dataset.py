@@ -1,6 +1,6 @@
 import torchvision
 
-def get_data(name):
+def get_data(name,train_transforms,test_transforms):
     if name == 'MNIST':
         train = datasets.MNIST('./data', train=True, download=True,transform=train_transforms)
         test = datasets.MNIST('./data', train=True, download=True,transform=test_transforms)
@@ -10,9 +10,9 @@ def get_data(name):
     
     return(train_set,test_set)
     
-def get_transforms(type):
-    if type == 'train':
-        return transforms.Compose([
+def get_transforms(mean, std):
+    
+    train = transforms.Compose([
                                         #  transforms.Resize((28, 28)),
                                         #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
                                         transforms.RandomRotation(
@@ -22,38 +22,37 @@ def get_transforms(type):
                                         transforms.ToTensor(),
                                         # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
                                         transforms.Normalize(
-                                            (0.1307,), (0.3081,))
+                                            (mean,), (std,))
                                         ])
-    if type == 'test':
-        return transforms.Compose([
+    test = transforms.Compose([
         #  transforms.Resize((28, 28)),
         #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
         transforms.ToTensor(),
         # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
         transforms.Normalize((0.1307,), (0.3081,))
     ])
+    return train,test
 
 
 def get_dataloader(type,**dataloader_args):
     # train dataloader
-    if type == 'train':
-        return torch.utils.data.DataLoader(train, ** dataloader_args)
+    train = torch.utils.data.DataLoader(train, ** dataloader_args)
 
     # test dataloader
-    if type == 'test':
-        return torch.utils.data.DataLoader(test, **dataloader_args)
+    test = torch.utils.data.DataLoader(test, **dataloader_args)
+    
+    return train, test
 
 
 def get_data_stats(data):
-    #Dataset stats & sampledata
-    
-    print(' - Numpy Shape:', data.cpu().numpy().shape)
-    print(' - Tensor Shape:', data.size())
-    print(' - min:', torch.min(data))
-    print(' - max:', torch.max(data))
-    print(' - mean:', torch.Tensor.float(data).mean())
-    print(' - std:', torch.Tensor.float(data).std())
-    print(' - var:', torch.Tensor.float(data).var())
+    #Dataset stats     
+    return {' - Numpy Shape': data.cpu().numpy().shape,
+    'Tensor Shape': data.size(),
+    'min': torch.min(data),
+    'max': torch.max(data),
+    'mean': torch.Tensor.float(data).mean(),
+    'std': torch.Tensor.float(data).std(),
+    'var': torch.Tensor.float(data).var()}
 
 
 def get_data(data_loader):
