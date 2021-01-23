@@ -15,10 +15,9 @@ def get_dataset(name, train_transforms = None, test_transforms = None):
 
 def get_transforms(mean, std):
     train = transforms.Compose([
-                                        #  transforms.Resize((28, 28)),
-                                        #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
-                                        transforms.RandomRotation(
-                                            (-5.0, 5.0), fill=(0,)),
+                                        # transforms.Resize((28, 28)),
+                                        # transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
+                                        transforms.RandomRotation((-5.0, 5.0)),
                                         # transforms.RandomAffine((-5.0,5.0),fillcolor=1),
                                         #transforms.RandomPerspective(),
                                         transforms.ToTensor(),
