@@ -1,3 +1,15 @@
+import torchvision
+
+def get_data(name):
+    if name == 'MNIST':
+        train = datasets.MNIST('./data', train=True, download=True,transform=train_transforms)
+        test = datasets.MNIST('./data', train=True, download=True,transform=test_transforms)
+    else if name == 'CIFAR10':
+        train_set = datasets.CIFAR10(root='./data', train=True,download=True, transform=train_transform)
+        test_set  = datasets.CIFAR10(root='./data', train=False,download=True, transform=test_transform)
+    
+    return(train_set,test_set)
+    
 def get_transforms(type):
     if type == 'train':
         return transforms.Compose([
