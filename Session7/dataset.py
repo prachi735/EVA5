@@ -50,7 +50,7 @@ def get_data_stats(data):
     'var': torch.Tensor.float(data).var()}
 
 
-def get_data(data_loader):
-    dataiter = iter(data_loader)
-    images, labels = dataiter.next()
-    return images, lables
+#def get_data(data_loader):
+#    dataiter = iter(data_loader)
+#    images, labels = dataiter.next()
+#    return images, lables
