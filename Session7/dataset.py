@@ -5,7 +5,7 @@ def get_data(name):
     if name == 'MNIST':
         train = datasets.MNIST('./data', train=True, download=True)
         test = datasets.MNIST('./data', train=True, download=True)
-    else if name == 'CIFAR10':
+    elif name == 'CIFAR10':
         train_set = datasets.CIFAR10(root='./data', train=True,download=True)
         test_set  = datasets.CIFAR10(root='./data', train=False,download=True)
     
