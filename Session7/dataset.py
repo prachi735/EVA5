@@ -7,8 +7,8 @@ def get_dataset(name, train_transforms = None, test_transforms = None):
         train = datasets.MNIST('./data', train=True, download=True,transform=train_transforms)
         test = datasets.MNIST('./data', train=True, download=True,transform=test_transforms)
     elif name == 'CIFAR10':
-        train = datasets.CIFAR10(root='./data', train=True,download=True)
-        test  = datasets.CIFAR10(root='./data', train=False,download=True)
+        train = datasets.CIFAR10(root='./data', train=True,download=True,transform=train_transforms)
+        test  = datasets.CIFAR10(root='./data', train=False,download=True,transform=test_transforms)
     
     return train,test
    
