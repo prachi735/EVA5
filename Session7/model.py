@@ -56,7 +56,7 @@ class Net(nn.Module):
             nn.ReLU(),
             GhostBatchNorm(n1, gbn_splits) if is_GBN else nn.BatchNorm2d(n1),
             
-            nn.Conv2d(in_channels=in_c, out_channels=n1,
+            nn.Conv2d(in_channels=n1, out_channels=n1,
                       kernel_size=(3, 3), padding=0, bias=False),
             nn.ReLU(),
             GhostBatchNorm(n1, gbn_splits) if is_GBN else nn.BatchNorm2d(n1)
