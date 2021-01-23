@@ -1,3 +1,4 @@
+import torch
 def test(model, device, test_loader, test_losses, test_acc):
 
     model.eval()
