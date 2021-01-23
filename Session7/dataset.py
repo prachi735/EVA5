@@ -1,5 +1,5 @@
 def get_transforms(type):
-    if type = 'train':
+    if type == 'train':
         return transforms.Compose([
                                         #  transforms.Resize((28, 28)),
                                         #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
@@ -12,7 +12,7 @@ def get_transforms(type):
                                         transforms.Normalize(
                                             (0.1307,), (0.3081,))
                                         ])
-    if type = 'test':
+    if type == 'test':
         return transforms.Compose([
         #  transforms.Resize((28, 28)),
         #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
@@ -22,12 +22,14 @@ def get_transforms(type):
     ])
 
 
-def get_dataloader(**dataloader_args):
+def get_dataloader(type,**dataloader_args):
     # train dataloader
-    train_loader = torch.utils.data.DataLoader(train, ** dataloader_args)
+    if type == 'train':
+        return torch.utils.data.DataLoader(train, ** dataloader_args)
 
     # test dataloader
-    test_loader = torch.utils.data.DataLoader(test, **dataloader_args)
+    if type == 'test':
+        return torch.utils.data.DataLoader(test, **dataloader_args)
 
 
 def get_data_stats(data):
