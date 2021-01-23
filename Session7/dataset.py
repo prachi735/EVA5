@@ -7,10 +7,10 @@ def get_dataset(name):
         train = datasets.MNIST('./data', train=True, download=True)
         test = datasets.MNIST('./data', train=True, download=True)
     elif name == 'CIFAR10':
-        train_set = datasets.CIFAR10(root='./data', train=True,download=True)
-        test_set  = datasets.CIFAR10(root='./data', train=False,download=True)
+        train = datasets.CIFAR10(root='./data', train=True,download=True)
+        test  = datasets.CIFAR10(root='./data', train=False,download=True)
     
-    return train_set,test_set
+    return train,test
    
 
 def get_transforms(mean, std):
