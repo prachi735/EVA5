@@ -1,3 +1,4 @@
+import torch
 import torchvision
 
 def get_data(name):
@@ -11,7 +12,6 @@ def get_data(name):
     return(train_set,test_set)
     
 def get_transforms(mean, std):
-    
     train = transforms.Compose([
                                         #  transforms.Resize((28, 28)),
                                         #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
@@ -45,8 +45,8 @@ def get_dataloader(train,test,**dataloader_args):
 
 
 def get_data_stats(data):
-    #Dataset stats     
-    return {' - Numpy Shape': data.cpu().numpy().shape,
+    #Dataset stats
+    return {'Numpy Shape': data.cpu().numpy().shape,
     'Tensor Shape': data.size(),
     'min': torch.min(data),
     'max': torch.max(data),
