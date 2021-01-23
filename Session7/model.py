@@ -51,15 +51,15 @@ class Net(nn.Module):
         
         # CONVOLUTION BLOCK 1
         self.convblock1 = nn.Sequential(
-            nn.Conv2d(in_channels=in_c, out_channels=16,
+            nn.Conv2d(in_channels=in_c, out_channels=64,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(16, gbn_splits) if is_GBN else nn.BatchNorm2d(16),
+            GhostBatchNorm(64, gbn_splits) if is_GBN else nn.BatchNorm2d(64),
             
-            nn.Conv2d(in_channels=16, out_channels=16,
+            nn.Conv2d(in_channels=64, out_channels=64,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(16, gbn_splits) if is_GBN else nn.BatchNorm2d(16)
+            GhostBatchNorm(64, gbn_splits) if is_GBN else nn.BatchNorm2d(16)
         )  # input_size = 28 output_size = 26 receptive_field = 3
 
         # TRANSITION BLOCK 1
@@ -68,15 +68,15 @@ class Net(nn.Module):
 
         # CONVOLUTION BLOCK 2 DSConnv
         self.convblock2 = nn.Sequential(
-            nn.Conv2d(in_channels=16, out_channels=32,
+            nn.Conv2d(in_channels=64, out_channels=64,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(32, gbn_splits) if is_GBN else nn.BatchNorm2d(32),
+            GhostBatchNorm(64, gbn_splits) if is_GBN else nn.BatchNorm2d(64),
             
-            nn.Conv2d(in_channels=32, out_channels=32,
+            nn.Conv2d(in_channels=64, out_channels=64,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
-            GhostBatchNorm(32, gbn_splits) if is_GBN else nn.BatchNorm2d(32)
+            GhostBatchNorm(64, gbn_splits) if is_GBN else nn.BatchNorm2d(64)
         )  # input_size = 26 output_size = 24 receptive_field = 5
 
         # TRANSITION BLOCK 2
@@ -85,7 +85,7 @@ class Net(nn.Module):
 
         # CONVOLUTION BLOCK 3 Dilated
         self.convblock3 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=128,
+            nn.Conv2d(in_channels=64, out_channels=128,
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
             GhostBatchNorm(128, gbn_splits) if is_GBN else nn.BatchNorm2d(128),
