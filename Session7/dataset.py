@@ -1,12 +1,12 @@
 import torchvision
 
-def get_data(name,train_transforms,test_transforms):
+def get_data(name):
     if name == 'MNIST':
-        train = datasets.MNIST('./data', train=True, download=True,transform=train_transforms)
-        test = datasets.MNIST('./data', train=True, download=True,transform=test_transforms)
+        train = datasets.MNIST('./data', train=True, download=True)
+        test = datasets.MNIST('./data', train=True, download=True)
     else if name == 'CIFAR10':
-        train_set = datasets.CIFAR10(root='./data', train=True,download=True, transform=train_transform)
-        test_set  = datasets.CIFAR10(root='./data', train=False,download=True, transform=test_transform)
+        train_set = datasets.CIFAR10(root='./data', train=True,download=True)
+        test_set  = datasets.CIFAR10(root='./data', train=False,download=True)
     
     return(train_set,test_set)
     
@@ -29,12 +29,12 @@ def get_transforms(mean, std):
         #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
         transforms.ToTensor(),
         # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
-        transforms.Normalize((0.1307,), (0.3081,))
+        transforms.Normalize((mean,), (std,))
     ])
     return train,test
 
 
-def get_dataloader(type,**dataloader_args):
+def get_dataloader(train,test,**dataloader_args):
     # train dataloader
     train = torch.utils.data.DataLoader(train, ** dataloader_args)
 
