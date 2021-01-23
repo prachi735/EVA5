@@ -17,7 +17,7 @@ def get_device():
   return device
 
 
-def get_misclassified_images(gbn_model,test_loader,is_gbn,gbn_splits):
+def get_misclassified_images(gbn_model,test_loader):
     
     test_images = []
     target_labels = []
