@@ -77,6 +77,12 @@ class Net(nn.Module):
                       kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
             GhostBatchNorm(64, gbn_splits) if is_GBN else nn.BatchNorm2d(64)
+            
+            
+            nn.Conv2d(in_channels=64, out_channels=64,
+                      kernel_size=(3, 3), padding=1, bias=False),
+            nn.ReLU(),
+            GhostBatchNorm(64, gbn_splits) if is_GBN else nn.BatchNorm2d(64)
         )  # input_size = 26 output_size = 24 receptive_field = 5
 
         # TRANSITION BLOCK 2
@@ -94,6 +100,11 @@ class Net(nn.Module):
                       kernel_size=(3, 3), padding=1, bias=False,dilation=2),
             nn.ReLU(),
             GhostBatchNorm(128, gbn_splits) if is_GBN else nn.BatchNorm2d(128)
+            
+            nn.Conv2d(in_channels=128, out_channels=128,
+                      kernel_size=(3, 3), padding=1, bias=False,dilation=2),
+            nn.ReLU(),
+            GhostBatchNorm(128, gbn_splits) if is_GBN else nn.BatchNorm2d(128)
         )  # input_size = 12 output_size = 10 receptive_field = 5
 
         # TRANSITION BLOCK 3
@@ -106,6 +117,11 @@ class Net(nn.Module):
                       kernel_size=(1, 1), padding=1, bias=False),
             nn.ReLU(),
             GhostBatchNorm(256, gbn_splits) if is_GBN else nn.BatchNorm2d(256),
+            
+            nn.Conv2d(in_channels=256, out_channels=256,
+                      kernel_size=(1, 1), padding=1, bias=False,groups=64),
+            nn.ReLU(),
+            GhostBatchNorm(256, gbn_splits) if is_GBN else nn.BatchNorm2d(256)
             
             nn.Conv2d(in_channels=256, out_channels=256,
                       kernel_size=(1, 1), padding=1, bias=False,groups=64),
