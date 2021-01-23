@@ -46,7 +46,7 @@ class GhostBatchNorm(BatchNorm):
 
 
 class Net(nn.Module):
-    def __init__(self, is_GBN=False, gbn_splits=2, in_c = 1,n1=16,n2=16,n3=16,n4=16):
+    def __init__(self, is_GBN=False, gbn_splits=2, in_c = 1,n1=16,n2=16,n3=16,n4=16,grp=512):
         super(Net, self).__init__()
         
         # CONVOLUTION BLOCK 1
@@ -69,7 +69,7 @@ class Net(nn.Module):
         # CONVOLUTION BLOCK 2 DSConnv
         self.convblock2 = nn.Sequential(
             nn.Conv2d(in_channels=n1, out_channels=n2,
-                      kernel_size=(3, 3), padding=1, bias=False,groups=32),
+                      kernel_size=(3, 3), padding=1, bias=False),
             nn.ReLU(),
             GhostBatchNorm(n2, gbn_splits) if is_GBN else nn.BatchNorm2d(n2),
             
@@ -108,7 +108,7 @@ class Net(nn.Module):
             GhostBatchNorm(n4, gbn_splits) if is_GBN else nn.BatchNorm2d(n4),
             
             nn.Conv2d(in_channels=n4, out_channels=n4,
-                      kernel_size=(1, 1), padding=1, bias=False),
+                      kernel_size=(1, 1), padding=1, bias=False,groups=grp),
             nn.ReLU(),
             GhostBatchNorm(n4, gbn_splits) if is_GBN else nn.BatchNorm2d(n4)
         )  # input_size = 12 output_size = 10 receptive_field = 5
