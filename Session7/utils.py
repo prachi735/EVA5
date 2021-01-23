@@ -1,4 +1,5 @@
 import torch
+import matplotlib.pyplot as plt
 
 def get_device():
   SEED = 3
@@ -19,6 +20,7 @@ def get_device():
 
 def get_misclassified_images(gbn_model,test_loader):
     
+    
     test_images = []
     target_labels = []
     target_predictions = []
@@ -37,3 +39,17 @@ def get_misclassified_images(gbn_model,test_loader):
     target_predictions = target_predictions[misclassified_index]
 
     return test_images,target_labels,target_predictions
+
+def plot_results(train_losses,train_acc,test_losses,test_acc):
+    data = {'train_loss':train_losses,  'train_acc':train_acc,  'test_loss':test_losses,  'test_acc':test_acc}
+    fig, axs = plt.subplots(1,4,figsize=(30,5))
+    axs_pos = {'train_loss':(0),
+    'train_acc':(1),
+    'test_loss':(2),
+    'test_acc':(3)}
+
+    for i in data:
+        ax = axs[axs_pos[i]]
+        ax.plot(data[i],label=d)
+        ax.legend(bbox_to_anchor=(.8, -.05),ncol=3)#,#bbox_transform=ax.transAxes)
+        ax.set_title(i)
