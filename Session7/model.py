@@ -66,10 +66,10 @@ class Net(nn.Module):
         self.pool1 = nn.Sequential(
             nn.MaxPool2d(2, 2))# input_size = 24 output_size = 12 receptive_field =
 
-        # CONVOLUTION BLOCK 2
+        # CONVOLUTION BLOCK 2 DSConnv
         self.convblock2 = nn.Sequential(
             nn.Conv2d(in_channels=n1, out_channels=n2,
-                      kernel_size=(3, 3), padding=0, bias=False),
+                      kernel_size=(3, 3), padding=0, bias=False,groups=32),
             nn.ReLU(),
             GhostBatchNorm(n2, gbn_splits) if is_GBN else nn.BatchNorm2d(n2),
             
@@ -83,7 +83,7 @@ class Net(nn.Module):
         self.pool2 = nn.Sequential(
             nn.MaxPool2d(2, 2))  # input_size = 24 output_size = 12 receptive_field =
 
-        # CONVOLUTION BLOCK 3
+        # CONVOLUTION BLOCK 3 Dilated
         self.convblock3 = nn.Sequential(
             nn.Conv2d(in_channels=n2, out_channels=n3,
                       kernel_size=(3, 3), padding=0, bias=False),
@@ -91,7 +91,7 @@ class Net(nn.Module):
             GhostBatchNorm(n3, gbn_splits) if is_GBN else nn.BatchNorm2d(n3),
             
             nn.Conv2d(in_channels=n3, out_channels=n3,
-                      kernel_size=(3, 3), padding=0, bias=False),
+                      kernel_size=(3, 3), padding=0, bias=False,dilation=2),
             nn.ReLU(),
             GhostBatchNorm(n3, gbn_splits) if is_GBN else nn.BatchNorm2d(n3)
         )  # input_size = 12 output_size = 10 receptive_field = 5
