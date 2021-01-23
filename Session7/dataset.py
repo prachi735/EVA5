@@ -2,7 +2,7 @@ import torch
 from torchvision import datasets, transforms, utils
 import numpy
 
-def get_data(name):
+def get_dataset(name):
     if name == 'MNIST':
         train = datasets.MNIST('./data', train=True, download=True)
         test = datasets.MNIST('./data', train=True, download=True)
