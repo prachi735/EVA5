@@ -46,12 +46,12 @@ class GhostBatchNorm(BatchNorm):
 
 
 class Net(nn.Module):
-    def __init__(self, is_GBN=False, gbn_splits=2):
+    def __init__(self, is_GBN=False, gbn_splits=2, in_c = 1):
         super(Net, self).__init__()
         
         # CONVOLUTION BLOCK 1
         self.convblock1 = nn.Sequential(
-            nn.Conv2d(in_channels=1, out_channels=10,
+            nn.Conv2d(in_channels=in_c, out_channels=10,
                       kernel_size=(3, 3), padding=0, bias=False),
             nn.ReLU(),
             GhostBatchNorm(10, gbn_splits) if is_GBN else nn.BatchNorm2d(10)
