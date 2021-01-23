@@ -35,17 +35,12 @@ def get_transforms(mean, std):
 
 
 def get_dataloader(train,test,**dataloader_args):
-    # train dataloader
     train = torch.utils.data.DataLoader(train, ** dataloader_args)
-
-    # test dataloader
     test = torch.utils.data.DataLoader(test, **dataloader_args)
-    
     return train, test
 
 
 def get_data_stats(data):
-    #Dataset stats
     return {'Numpy Shape': data.cpu().numpy().shape,
     'Tensor Shape': data.size(),
     'min': torch.min(data),
