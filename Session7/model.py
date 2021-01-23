@@ -118,7 +118,7 @@ class Net(nn.Module):
         self.output = nn.Sequential(
             nn.AdaptiveAvgPool2d((1, 1)),
             nn.Conv2d(in_channels=n4, out_channels=10,
-                      kernel_size=(1, 1), padding=1, bias=False)
+                      kernel_size=(1, 1), padding=0, bias=False)
         )  # input_size = 5 output_size = 1  receptive_field = 29
 
     def forward(self, x):
