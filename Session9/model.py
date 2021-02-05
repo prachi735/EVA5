@@ -117,3 +117,11 @@ def run_model(model, device, optimiser, EPOCHS=1, is_L1_loss=False, is_GBN=False
       test(model, device, test_loader, test_losses, test_acc)
 
   return {'train_loss': train_losses,  'train_acc': train_acc,  'test_loss': test_losses,  'test_acc': test_acc}
+
+def get_optimizer(model_parameters,loss_type):
+    if loss_type == "L2":
+        optimizer = optim.SGD(model_parameters, lr=0.01,
+                  momentum=0, weight_decay=0, nesterov=False)
+    else:
+        optimizer = optim.SGD(model_parameters, lr= 0.01, momentum=0.9)
+    return optimizer
