@@ -103,7 +103,7 @@ class ResNet(nn.Module):
 def ResNet_18():
     return ResNet(BasicBlock, [2, 2, 2, 2])
 
-def run_model(model, device, optimiser, EPOCHS=1, is_L1_loss=False, is_GBN=False, gbn_splits=2):
+def run_model(model, device, optimiser,train_loader,test_loader, EPOCHS=1, is_L1_loss=False, is_GBN=False, gbn_splits=2):
 
   train_losses = []
   train_acc = []
@@ -118,7 +118,7 @@ def run_model(model, device, optimiser, EPOCHS=1, is_L1_loss=False, is_GBN=False
 
   return {'train_loss': train_losses,  'train_acc': train_acc,  'test_loss': test_losses,  'test_acc': test_acc}
 
-def get_optimizer(model_parameters,loss_type):
+def get_optimizer(model_parameters,loss_type,learn_rate):
     if loss_type == "L2":
         optimizer = optim.SGD(model_parameters, lr=0.01,
                   momentum=0, weight_decay=0, nesterov=False)
