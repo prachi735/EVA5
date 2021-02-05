@@ -22,12 +22,12 @@ def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc
 
     # Calculate loss
     loss = loss_fn(y_pred, target)
-    train_losses.append(loss)  # .item()
+    train_loss += loss.item()
+    train_losses.append(train_loss)  # .item()
 
     # Backpropagation
     loss.backward()
     optimizer.step()
-    train_loss += loss.item()
 
     # Update pbar-tqdm
 
