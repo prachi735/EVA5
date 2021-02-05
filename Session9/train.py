@@ -1,10 +1,16 @@
 from tqdm import tqdm
 import torch.nn.functional as F
 
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(net.parameters(), lr=args.lr,
+                      momentum=0.9, weight_decay=5e-4)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+
 def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc, l1_loss_flag, lamda_l1=0.0001):
 
   model.train()
   pbar = tqdm(train_loader)
+  loss = 0
   correct = 0
   processed = 0
   for batch_idx, (data, target) in enumerate(pbar):
@@ -20,19 +26,13 @@ def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc
     y_pred = model(data)
 
     # Calculate loss
-    loss = F.nll_loss(y_pred, target)
-
-    if l1_loss_flag:
-       l1 = 0
-       for p in model.parameters():
-         l1 = l1+p.abs().sum()
-       loss += lamda_l1 * l1
-
+    loss = criterion(y_pred, target)
     train_losses.append(loss)  # .item()
 
     # Backpropagation
     loss.backward()
     optimizer.step()
+    train_loss += loss.item()
 
     # Update pbar-tqdm
 
