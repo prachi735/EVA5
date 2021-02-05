@@ -9,20 +9,14 @@ def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc
   correct = 0
   processed = 0
   for batch_idx, (data, target) in enumerate(pbar):
-    # get samples
     data, target = data.to(device), target.to(device)
-
-    # Init
+    
     optimizer.zero_grad()
-    # In PyTorch, we need to set the gradients to zero before starting to do backpropragation because PyTorch accumulates the gradients on subsequent backward passes.
-    # Because of this, when you start your training loop, ideally you should zero out the gradients so that you do the parameter update correctly.
-
-    # Predict
+    
     y_pred = model(data)
 
     # Calculate loss
     loss = loss_fn(y_pred, target)
-    train_loss += loss.item()
     train_losses.append(train_loss)  # .item()
 
     # Backpropagation
@@ -39,3 +33,7 @@ def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc
     pbar.set_description(
         desc=f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100*correct/processed:0.2f}')
     train_acc.append(100*correct/processed)
+    
+    print('\Train set: Accuracy: {}/{} ({:.4f}%)\n'.format(
+        correct, len(train_loader.dataset),
+        100. * correct / len(train_loader.dataset)))
