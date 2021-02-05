@@ -1,7 +1,7 @@
 from tqdm import tqdm
 import torch.nn.functional as F
 
-def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc, l1_loss_flag, lamda_l1=0.0001):
+def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc, loss_fn):
 
   model.train()
   pbar = tqdm(train_loader)
@@ -21,7 +21,7 @@ def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc
     y_pred = model(data)
 
     # Calculate loss
-    loss = criterion(y_pred, target)
+    loss = loss_fn(y_pred, target)
     train_losses.append(loss)  # .item()
 
     # Backpropagation
