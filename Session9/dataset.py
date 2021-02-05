@@ -41,16 +41,13 @@ def get_transforms(mean, std):
             A.RandomBrightnessContrast(),            
         ], p=0.3),
         A.HueSaturationValue(p=0.3),
-        A.ToTensor(),
-        A.Normalize(mean,std)
+        A.pytorch.transforms.ToTensor(),
+        A.augmentations.transforms.Normalize(mean,std)
     ])
 
     test = transforms.Compose([
-        #  transforms.Resize((28, 28)),
-        #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
-        transforms.ToTensor(),
-        # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
-        transforms.Normalize((mean,), (std,))
+        A.pytorch.transforms.ToTensor(),
+        A.augmentations.transforms.Normalize(mean,std)
     ])
     return train,test
 
