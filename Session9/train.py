@@ -5,7 +5,7 @@ def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc
 
   model.train()
   pbar = tqdm(train_loader)
-  loss = 0
+  train_loss = 0
   correct = 0
   processed = 0
   for batch_idx, (data, target) in enumerate(pbar):
