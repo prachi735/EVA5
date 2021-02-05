@@ -100,7 +100,7 @@ class ResNet(nn.Module):
         out = self.linear(out)
         return out
 
-def ResNet18():
+def ResNet_18():
     return ResNet(BasicBlock, [2, 2, 2, 2])
 
 def run_model(model, device, optimiser, EPOCHS=1, is_L1_loss=False, is_GBN=False, gbn_splits=2):
