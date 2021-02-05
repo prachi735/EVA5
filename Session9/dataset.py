@@ -6,11 +6,10 @@ import albumentations as A
 def get_dataset(name, train_transforms = None, test_transforms = None):
     if name == 'CIFAR10':
         train = datasets.CIFAR10('./data', train=True, download=True,transform=train_transforms)
-        test = datasets.CIFAR10('./data', train=True, download=True,transform=test_transforms)
+        test = datasets.CIFAR10('./data', train=False, download=True,transform=test_transforms)
     else:
         train = datasets.CIFAR100(root='./data', train=True,download=True,transform=train_transforms)
         test  = datasets.CIFAR100(root='./data', train=False,download=True,transform=test_transforms)
-    
     return train,test
    
 
@@ -23,11 +22,11 @@ def get_transforms(mean, std):
             A.IAAAdditiveGaussianNoise(),
             A.GaussNoise(),
         ], p=0.2),
-        A.OneOf([
-            A.MotionBlur(p=.2),
-            A.MedianBlur(blur_limit=3, p=0.1),
-            A.Blur(blur_limit=3, p=0.1),
-        ], p=0.2),
+        # A.OneOf([
+        #     A.MotionBlur(p=.2),
+        #     A.MedianBlur(blur_limit=3, p=0.1),
+        #     A.Blur(blur_limit=3, p=0.1),
+        # ], p=0.2),
         A.ShiftScaleRotate(shift_limit=0.0625, scale_limit=0.2, rotate_limit=45, p=0.2),
         A.OneOf([
             A.OpticalDistortion(p=0.3),
