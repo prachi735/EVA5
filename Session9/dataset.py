@@ -1,5 +1,5 @@
 import torch
-from torchvision import datasets, utils
+from torchvision import datasets, transforms,utils
 import numpy
 import albumentations as A
 
@@ -41,13 +41,13 @@ def get_transforms(mean, std):
             A.RandomBrightnessContrast(),            
         ], p=0.3),
         A.HueSaturationValue(p=0.3),
-        A.pytorch.transforms.ToTensor(),
-        A.augmentations.transforms.Normalize(mean,std)
+        transforms.ToTensor(),
+        transforms.Normalize(mean,std)
     ])
 
     test = transforms.Compose([
-        A.pytorch.transforms.ToTensor(),
-        A.augmentations.transforms.Normalize(mean,std)
+        transforms.ToTensor(),
+        transforms.Normalize(mean,std)
     ])
     return train,test
 
