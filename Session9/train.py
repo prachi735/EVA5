@@ -1,11 +1,6 @@
 from tqdm import tqdm
 import torch.nn.functional as F
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=args.lr,
-                      momentum=0.9, weight_decay=5e-4)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
-
 def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc, l1_loss_flag, lamda_l1=0.0001):
 
   model.train()
