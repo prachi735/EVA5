@@ -18,10 +18,10 @@ def get_transforms(mean, std):
         A.RandomRotate90(),
         A.Flip(),
         A.Transpose(),
-        A.OneOf([
-            A.IAAAdditiveGaussianNoise(),
-            A.GaussNoise(),
-        ], p=0.2),
+        # A.OneOf([
+        #     A.IAAAdditiveGaussianNoise(),
+        #     A.GaussNoise(),
+        # ], p=0.2),
         # A.OneOf([
         #     A.MotionBlur(p=.2),
         #     A.MedianBlur(blur_limit=3, p=0.1),
