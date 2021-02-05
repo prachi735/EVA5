@@ -4,12 +4,12 @@ import numpy
 import albumentations as A
 
 def get_dataset(name, train_transforms = None, test_transforms = None):
-    if name == 'MNIST':
-        train = datasets.MNIST('./data', train=True, download=True,transform=train_transforms)
-        test = datasets.MNIST('./data', train=True, download=True,transform=test_transforms)
-    elif name == 'CIFAR10':
-        train = datasets.CIFAR10(root='./data', train=True,download=True,transform=train_transforms)
-        test  = datasets.CIFAR10(root='./data', train=False,download=True,transform=test_transforms)
+    if name == 'CIFAR10':
+        train = datasets.CIFAR10('./data', train=True, download=True,transform=train_transforms)
+        test = datasets.CIFAR10('./data', train=True, download=True,transform=test_transforms)
+    else:
+        train = datasets.CIFAR100(root='./data', train=True,download=True,transform=train_transforms)
+        test  = datasets.CIFAR100(root='./data', train=False,download=True,transform=test_transforms)
     
     return train,test
    
