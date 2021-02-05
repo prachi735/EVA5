@@ -58,17 +58,16 @@ def get_dataloader(train,test,**dataloader_args):
     return train, test
 
 
-def get_data_stats(data):
-    return {'Numpy Shape': data.cpu().numpy().shape,
-    'Tensor Shape': data.size(),
-    'min': torch.min(data),
-    'max': torch.max(data),
-    'mean': torch.Tensor.float(data).mean(),
-    'std': torch.Tensor.float(data).std(),
-    'var': torch.Tensor.float(data).var()}
+def get_mean_and_std(dataset):
+    '''Compute the mean and std value of dataset.'''
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=2)
+    mean = torch.zeros(3)
+    std = torch.zeros(3)
 
-
-#def get_data(data_loader):
-#    dataiter = iter(data_loader)
-#    images, labels = dataiter.next()
-#    return images, lables
+    for inputs, targets in dataloader:
+        for i in range(3):
+            mean[i] += inputs[:,i,:,:].mean()
+            std[i] += inputs[:,i,:,:].std()
+    mean.div_(len(dataset))
+    std.div_(len(dataset))
+    return mean, std
