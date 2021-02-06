@@ -90,7 +90,7 @@ def get_album_transforms(norm_mean, norm_std):
     return train_transform, test_transform
 
 
-def apply_album_trandformation(data, transforms):
+def apply_album_transformation(data, transforms):
     return AlbumentationsDataset(
         rimages=data.data,
         labels=data.targets,
