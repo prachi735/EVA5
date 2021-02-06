@@ -1,6 +1,12 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
 
 class BatchNorm(nn.BatchNorm2d):
     def __init__(self, num_features, eps=1e-05, momentum=0.1, weight=True, bias=True):
@@ -42,7 +48,6 @@ class GhostBatchNorm(BatchNorm):
             return F.batch_norm(
                 input, self.running_mean[:self.num_features], self.running_var[:self.num_features],
                 self.weight, self.bias, False, self.momentum, self.eps)
-
 
 
 class BasicBlock(nn.Module):
@@ -103,6 +108,7 @@ class Bottleneck(nn.Module):
         out = F.relu(out)
         return out
 
+
 class ResNet(nn.Module):
     def __init__(self, block, num_blocks, num_classes=10):
         super(ResNet, self).__init__()
@@ -135,6 +141,7 @@ class ResNet(nn.Module):
         out = out.view(out.size(0), -1)
         out = self.linear(out)
         return out
+
 
 def ResNet_18():
     return ResNet(BasicBlock, [2, 2, 2, 2])
