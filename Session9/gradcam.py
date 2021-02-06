@@ -1,229 +1,261 @@
-import cv2
-import numpy as np
 import torch
+import torch.nn.functional as F
+import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 
-class _BaseWrapper(object):
-    def __init__(self, model):
-        super(_BaseWrapper, self).__init__()
-        self.device = next(model.parameters()).device
+class GradCAM:
+    """Calculate GradCAM salinecy map.
+    Args:
+        input: Input image with shape of (1, 3, H, W)
+        class_idx: Class index for calculating GradCAM.
+            If not specified, the class index that makes the highest model prediction score will be used.
+    Returns:
+        mask: Saliency map of the same spatial dimension with input
+        logit: Model output
+    """
+
+    def __init__(self, model, layer_name):
         self.model = model
-        self.handlers = []  # a set of hook function handlers
+        self.layer_name = layer_name
+        self._target_layer()
 
-    def _encode_one_hot(self, ids):
-        one_hot = torch.zeros_like(self.logits).to(self.device)
-        one_hot.scatter_(1, ids, 1.0)
-        return one_hot
+        self.gradients = dict()
+        self.activations = dict()
 
-    def forward(self, image):
-        self.image_shape = image.shape[2:]
-        self.logits = self.model(image)
-        self.probs = F.softmax(self.logits, dim=1)
-        return self.probs.sort(dim=1, descending=True)  # ordered results
+        def backward_hook(module, grad_input, grad_output):
+            self.gradients['value'] = grad_output[0]
 
-    def backward(self, ids):
-        """
-        Class-specific backpropagation
-        """
-        one_hot = self._encode_one_hot(ids)
-        self.model.zero_grad()
-        self.logits.backward(gradient=one_hot, retain_graph=True)
+        def forward_hook(module, input, output):
+            self.activations['value'] = output
 
-    def generate(self):
-        raise NotImplementedError
+        self.target_layer.register_forward_hook(forward_hook)
+        self.target_layer.register_backward_hook(backward_hook)
 
-    def remove_hook(self):
-        """
-        Remove all the forward/backward hook functions
-        """
-        for handle in self.handlers:
-            handle.remove()
+    def _target_layer(self):
+        layer_num = int(self.layer_name.lstrip('layer'))
+        if layer_num == 1:
+            self.target_layer = self.model.layer1
+        elif layer_num == 2:
+            self.target_layer = self.model.layer2
+        elif layer_num == 3:
+            self.target_layer = self.model.layer3
+        elif layer_num == 4:
+            self.target_layer = self.model.layer4
 
+    def saliency_map_size(self, *input_size):
+        device = next(self.model.parameters()).device
+        self.model(torch.zeros(1, 3, *input_size, device=device))
+        return self.activations['value'].shape[2:]
 
-class GradCAM(_BaseWrapper):
-    """
-    "Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"
-    https://arxiv.org/pdf/1610.02391.pdf
-    Look at Figure 2 on page 4
-    """
+    def forward(self, input, class_idx=None, retain_graph=False):
+        b, c, h, w = input.size()
 
-    def __init__(self, model, candidate_layers=None):
-        super(GradCAM, self).__init__(model)
-        self.fmap_pool = {}
-        self.grad_pool = {}
-        self.candidate_layers = candidate_layers  # list
-
-        def save_fmaps(key):
-            def forward_hook(module, input, output):
-                self.fmap_pool[key] = output.detach()
-
-            return forward_hook
-
-        def save_grads(key):
-            def backward_hook(module, grad_in, grad_out):
-                self.grad_pool[key] = grad_out[0].detach()
-
-            return backward_hook
-
-        # If any candidates are not specified, the hook is registered to all the layers.
-        for name, module in self.model.named_modules():
-            if self.candidate_layers is None or name in self.candidate_layers:
-                self.handlers.append(
-                    module.register_forward_hook(save_fmaps(name)))
-                self.handlers.append(
-                    module.register_backward_hook(save_grads(name)))
-
-    def _find(self, pool, target_layer):
-        if target_layer in pool.keys():
-            return pool[target_layer]
+        logit = self.model(input)
+        if class_idx is None:
+            score = logit[:, logit.max(1)[-1]].squeeze()
         else:
-            raise ValueError("Invalid layer name: {}".format(target_layer))
+            score = logit[:, class_idx].squeeze()
 
-    def generate(self, target_layer):
-        fmaps = self._find(self.fmap_pool, target_layer)
-        grads = self._find(self.grad_pool, target_layer)
-        weights = F.adaptive_avg_pool2d(grads, 1)
+        self.model.zero_grad()
+        score.backward(retain_graph=retain_graph)
+        gradients = self.gradients['value']
+        activations = self.activations['value']
+        b, k, u, v = gradients.size()
 
-        gcam = torch.mul(fmaps, weights).sum(dim=1, keepdim=True)
-        gcam = F.relu(gcam)
-        gcam = F.interpolate(
-            gcam, self.image_shape, mode="bilinear", align_corners=False
-        )
+        alpha = gradients.view(b, k, -1).mean(2)
+        weights = alpha.view(b, k, 1, 1)
 
-        B, C, H, W = gcam.shape
-        gcam = gcam.view(B, -1)
-        gcam -= gcam.min(dim=1, keepdim=True)[0]
-        gcam /= gcam.max(dim=1, keepdim=True)[0]
-        gcam = gcam.view(B, C, H, W)
+        saliency_map = (weights*activations).sum(1, keepdim=True)
+        saliency_map = F.relu(saliency_map)
+        saliency_map = F.upsample(saliency_map, size=(
+            h, w), mode='bilinear', align_corners=False)
+        saliency_map_min, saliency_map_max = saliency_map.min(), saliency_map.max()
+        saliency_map = (
+            saliency_map - saliency_map_min).div(saliency_map_max - saliency_map_min).data
 
-        return gcam
+        return saliency_map, logit
+
+    def __call__(self, input, class_idx=None, retain_graph=False):
+        return self.forward(input, class_idx, retain_graph)
 
 
+def to_numpy(tensor):
+    """Convert 3-D torch tensor to a 3-D numpy array.
+    Args:
+        tensor: Tensor to be converted.
+    """
+    return np.transpose(tensor.clone().numpy(), (1, 2, 0))
 
-class UnNormalize:
-    def __init__(self, mean, std):
+
+def unnormalize(image, mean, std, out_type='array'):
+    """Un-normalize a given image.
+
+    Args:
+        image: A 3-D ndarray or 3-D tensor.
+            If tensor, it should be in CPU.
+        mean: Mean value. It can be a single value or
+            a tuple with 3 values (one for each channel).
+        std: Standard deviation value. It can be a single value or
+            a tuple with 3 values (one for each channel).
+        out_type: Out type of the normalized image.
+            If `array` then ndarray is returned else if
+            `tensor` then torch tensor is returned.
+    """
+
+    if type(image) == torch.Tensor:
+        image = np.transpose(image.clone().numpy(), (1, 2, 0))
+
+    normal_image = image * std + mean
+    if out_type == 'tensor':
+        return torch.Tensor(np.transpose(normal_image, (2, 0, 1)))
+    elif out_type == 'array':
+        return normal_image
+    return None  # No valid value given
+
+
+def visualize_cam(mask, img, alpha=1.0):
+    """Make heatmap from mask and synthesize GradCAM result image using heatmap and img.
+    Args:
+        mask (torch.tensor): mask shape of (1, 1, H, W) and each element has value in range [0, 1]
+        img (torch.tensor): img shape of (1, 3, H, W) and each pixel value is in range [0, 1]
+    Returns:
+        heatmap (torch.tensor): heatmap img shape of (3, H, W)
+        result (torch.tensor): synthesized GradCAM result of same shape with heatmap.
+    """
+
+    heatmap = (255 * mask.squeeze()).type(torch.uint8).cpu().numpy()
+    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+    heatmap = torch.from_numpy(heatmap).permute(2, 0, 1).float().div(255)
+    b, g, r = heatmap.split(1)
+    heatmap = torch.cat([r, g, b]) * alpha
+
+    result = heatmap + img.cpu()
+    result = result.div(result.max()).squeeze()
+
+    return heatmap, result
+
+
+class GradCAMView:
+
+    def __init__(self, model, layers, device, mean, std):
+        """Instantiate GradCAM and GradCAM++.
+        Args:
+            model: Trained model.
+            layers: List of layers to show GradCAM on.
+            device: GPU or CPU.
+            mean: Mean of the dataset.
+            std: Standard Deviation of the dataset.
+        """
+        self.model = model
+        self.layers = layers
+        self.device = device
         self.mean = mean
         self.std = std
 
-    '''
-        UnNormalizes an image given its mean and standard deviation
+        self._gradcam()
+
+        print('Mode set to GradCAM.')
+        self.grad = self.gradcam.copy()
+
+        self.views = []
+
+    def _gradcam(self):
+        """ Initialize GradCAM instance. """
+        self.gradcam = {}
+        for layer in self.layers:
+            self.gradcam[layer] = GradCAM(self.model, layer)
+
+    def switch_mode(self):
+        if self.grad == self.gradcam:
+            print('Mode switched to GradCAM++.')
+            self.grad = self.gradcam_pp.copy()
+        else:
+            print('Mode switched to GradCAM.')
+            self.grad = self.gradcam.copy()
+
+    def _cam_image(self, norm_image):
+        """Get CAM for an image.
         Args:
-            tensor (Tensor): Tensor image of size (C, H, W) to be normalized.
+            norm_image: Normalized image. Should be of type
+                torch.Tensor
+
         Returns:
-            Tensor: Normalized image.
-    '''
+            Dictionary containing unnormalized image, heatmap and CAM result.
+        """
+        norm_image_cuda = norm_image.clone().unsqueeze_(0).to(self.device)
+        heatmap, result = {}, {}
+        for layer, gc in self.gradcam.items():
+            mask, _ = gc(norm_image_cuda)
+            cam_heatmap, cam_result = visualize_cam(
+                mask,
+                unnormalize(norm_image, self.mean, self.std, out_type='tensor').clone(
+                ).unsqueeze_(0).to(self.device)
+            )
+            heatmap[layer], result[layer] = to_numpy(
+                cam_heatmap), to_numpy(cam_result)
+        return {
+            'image': unnormalize(norm_image, self.mean, self.std),
+            'heatmap': heatmap,
+            'result': result
+        }
 
-    def __call__(self, tensor):
-        for t, m, s in zip(tensor, self.mean, self.std):
-            t.mul_(s).add_(m)
-            # The normalize code -> t.sub_(m).div_(s)
-        return tensor
+    def _plot_view(self, view, fig, row_num, ncols, metric):
+        """Plot a CAM view.
+        Args:
+            view: Dictionary containing image, heatmap and result.
+            fig: Matplotlib figure instance.
+            row_num: Row number of the subplot.
+            ncols: Total number of columns in the subplot.
+            metric: Can be one of ['heatmap', 'result'].
+        """
+        sub = fig.add_subplot(row_num, ncols, 1)
+        sub.axis('off')
+        plt.imshow(view['image'])
+        sub.set_title(f'{metric.title()}:')
+        for idx, layer in enumerate(self.layers):
+            sub = fig.add_subplot(row_num, ncols, idx + 2)
+            sub.axis('off')
+            plt.imshow(view[metric][layer])
+            sub.set_title(layer)
 
-'''
-    Takes input as images, labels, device and target layers and returns model predictions and 
-    Args:
-    images - Image dataset
-    labels - Corresponding labels
-    model - Model used
-    device - cuda or cpu
-    target_layers- list of layers on which computation is done
-    Returns:
-    layers_region - 
-    pred_probs - Output of model fwd prop on the images
-    pred_ids - Output of model fwd prop on the images
-'''
+    def cam(self, norm_image_list):
+        """Get CAM for a list of images.
+        Args:
+            norm_image_list: List of normalized images. Each image
+                should be of type torch.Tensor
+        """
+        for norm_image in norm_image_list:
+            self.views.append(self._cam_image(norm_image))
 
+    def plot(self, plot_path):
+        """Plot heatmap and CAM result.
+        Args:
+            plot_path: Path to save the plot.
+        """
 
-def get_gradcam(images, labels, model: torch.nn.Module, device: str, target_layers: list):
+        for idx, view in enumerate(self.views):
+            # Initialize plot
+            fig = plt.figure(figsize=(10, 10))
 
-    model.to(device)
+            # Plot view
+            self._plot_view(view, fig, 1, len(self.layers) + 1, 'result')
 
-    model.eval()
+            # Set spacing and display
+            fig.tight_layout()
+            plt.show()
 
-    gcam = GradCAM(model=model, candidate_layers=target_layers)
+            # Save image
+            fig.savefig(f'{plot_path}_{idx + 1}.png', bbox_inches='tight')
 
-    # predicted probabilities and class ids
-    # Predictions of the model on the data
-    pred_probs, pred_ids = gcam.forward(images)
-    # actual class ids
-    target_ids = labels.view(len(images), -1).to(device)
+            # Clear cache
+            plt.clf()
 
-    # backward pass wrt to the actual ids
-    gcam.backward(ids=target_ids)
-
-    # we will store the layers and correspondings images activations here
-    layers_region = {}
-
-    # fetch the grad cam layers of all the images
-    for target_layer in target_layers:
-        # Grad-CAM generate function??
-        regions = gcam.generate(target_layer=target_layer)
-        layers_region[target_layer] = regions
-
-    # we are done here, remove the hooks
-    gcam.remove_hook()
-
-    return layers_region, pred_probs, pred_ids
-
-
-def plt_gradcam(gcam_layers, images, target_labels, predicted_labels, class_labels, un_normalize, paper_cmap=False):
-
-    images = images.cpu()
-    # convert BCHW to BHWC for plotting stuff
-
-    images = images.permute(0, 2, 3, 1)
-    target_labels = target_labels.cpu()
-
-    fig, axs = plt.subplots(nrows=len(images), ncols=len(
-        gcam_layers.keys())+2, figsize=((len(gcam_layers.keys()) + 2)*2, len(images)*2))
-    fig.suptitle("Grad-CAM", fontsize=16)
-
-    for image_idx, image in enumerate(images):
-
-        # un-normalize the image
-        denorm_img = un_normalize(image.permute(2, 0, 1)).permute(1, 2, 0)
-
-        axs[image_idx, 0].text(
-            0.5, 0.5, f'predicted: {class_labels[predicted_labels[image_idx][0] ]}\nactual: {class_labels[target_labels[image_idx]] }', horizontalalignment='center', verticalalignment='center', fontsize=14, )
-        axs[image_idx, 0].axis('off')
-
-        axs[image_idx, 1].imshow(
-            (denorm_img.numpy() * 255).astype(np.uint8),  interpolation='bilinear')
-        axs[image_idx, 1].axis('off')
-
-        for layer_idx, layer_name in enumerate(gcam_layers.keys()):
-            # gets H X W of the cam layer
-            _layer = gcam_layers[layer_name][image_idx].cpu().numpy()[0]
-            heatmap = 1 - _layer
-            heatmap = np.uint8(255 * heatmap)
-            heatmap_img = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-
-            superimposed_img = cv2.addWeighted(
-                (denorm_img.numpy() * 255).astype(np.uint8), 0.6, heatmap_img, 0.4, 0)
-
-            axs[image_idx, layer_idx +
-                2].imshow(superimposed_img, interpolation='bilinear')
-            axs[image_idx, layer_idx+2].set_title(f'layer: {layer_name}')
-            axs[image_idx, layer_idx+2].axis('off')
-
-    plt.tight_layout()
-    plt.subplots_adjust(top=0.95, wspace=0.2, hspace=0.2)
-    plt.show()
-    plt.savefig('gradcam.png')
-
-
-def generate_gradcam(model, test_loader, device, target_layers, mean, std, classes):
-
-    data, target = next(iter(test_loader))
-
-    data, target = data.to(device), target.to(device)  # Sending to Gradcam
-
-    gcam_layers, predicted_probs, predicted_classes = get_gradcam(
-        data, target, model, device, target_layers)
-
-    # get the denomarlization function
-    unorm = UnNormalize(mean=mean, std=std)
-
-    plt_gradcam(gcam_layers=gcam_layers, images=data, target_labels=target,
-                predicted_labels=predicted_classes, class_labels=classes, un_normalize=unorm)
-
+    def __call__(self, norm_image_list, plot_path):
+        """Get GradCAM for a list of images.
+        Args:
+            norm_image_list: List of normalized images. Each image
+                should be of type torch.Tensor
+        """
+        self.cam(norm_image_list)
+        self.plot(plot_path)
