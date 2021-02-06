@@ -75,8 +75,8 @@ def plot_results(train_losses, train_acc, test_losses, test_acc):
         ax.set_title(i)
 
 
-def show_misclassified_images(test_images, target_labels, target_predictions,classes, nrow=5, ncol=5):
-  fig, axes = plt.subplots(nrows=nrow, ncols=ncol, figsize=(15, 15))
+def show_misclassified_images(test_images, target_labels, target_predictions, classes, nrow=5, ncol=5, fig_size=(10, 10)):
+  fig, axes = plt.subplots(nrows=nrow, ncols=ncol, figsize=fig_size)
   fig.subplots_adjust(hspace=0.5)
   fig.suptitle('Misclassified Images in Model')
   for ax, image, target, prediction in zip(axes.flatten(), test_images, target_labels, target_predictions):
