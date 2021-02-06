@@ -30,10 +30,10 @@ def get_album_transforms(norm_mean, norm_std):
     '''
     train_transform = A.Compose([
         A.HorizontalFlip(p=1),
-        A.RGBShift(p=1),
-        A.Blur(blur_limit=11, p=1),
-        A.RandomBrightness(p=1),
-        A.CLAHE(p=1),
+        # A.RGBShift(p=1),
+        # A.Blur(blur_limit=11, p=1),
+        # A.RandomBrightness(p=1),
+        # A.CLAHE(p=1),
         ToTensorV2()
         
     ])
