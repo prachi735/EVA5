@@ -45,6 +45,7 @@ def plot_sample_imagesdataloader(dataloader, num=5, fig_size=(10, 10)):
 
 def get_misclassified_images(model, test_loader, classes, count=25):
 
+    img_count = 0
     test_images = []
     target_labels = []
     target_predictions = []
@@ -53,6 +54,9 @@ def get_misclassified_images(model, test_loader, classes, count=25):
       test_images.append(img)
       target_labels.append(classes[target])
       target_predictions.append(classes[prediction])
+      img_count += 1
+      if img_count == count:
+        break
 
 
     test_images = torch.cat(test_images)
