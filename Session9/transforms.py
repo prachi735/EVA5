@@ -2,7 +2,7 @@ import albumentations as A
 import albumentations.pytorch as AP
 
 from torchvision import transforms
-
+from torch.utils.data import Dataset
 
 class AlbumentationsDataset(Dataset):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
