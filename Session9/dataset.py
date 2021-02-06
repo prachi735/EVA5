@@ -1,6 +1,6 @@
 
 from torchvision import datasets
-
+import torch
 
 def get_data(train_transforms, test_transforms):
     train = datasets.CIFAR10('./data', train=True, download=True,transform=train_transforms)
