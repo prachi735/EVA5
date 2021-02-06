@@ -1,4 +1,5 @@
-from tqdm import tqdm
+import torch
+import torch.nn.functional as F
 
 test_losses = []
 test_acc = []
