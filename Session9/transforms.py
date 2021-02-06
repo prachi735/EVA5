@@ -31,7 +31,7 @@ def get_album_transforms(norm_mean, norm_std):
     '''
     get the train and test transform by albumentations
     '''
-    train_transform = A.Compose([A.Normalize(mean=mean, std=standard_deviation, always_apply=True, p=1.0),
+    train_transform = A.Compose([A.Normalize(mean=norm_mean, std=norm_std, always_apply=True, p=1.0),
                                  A.RandomCrop(32, 32),
                                  A.HorizontalFlip(p=0.5),
                                  A.GridDistortion(num_steps=5, distort_limit=0.3, interpolation=1,
