@@ -21,7 +21,7 @@ def get_device():
   return device
 
 
-def get_dataloader(data):
+def get_dataloader(data, ** dataloader_args):
   
   dataloader = torch.utils.data.DataLoader(data, ** dataloader_args)
 
