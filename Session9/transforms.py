@@ -3,7 +3,8 @@ import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2 
 from torchvision import  transforms as tvt
 
-class AlbumentationsDataset(Dataset):
+
+class AlbumentationsDataset(CIFAR10):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
     def __init__(self, rimages, labels, transform=None):
@@ -75,7 +76,7 @@ def apply_album_transformation(data, transforms):
 
 
 def get_torch_transforms(mean, std):
-    train = transforms.Compose([
+    train = tvt.Compose([
                                         # transforms.Resize((28, 28)),
                                         tvt.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
                                         tvt.RandomRotation((-5.0, 5.0)),
