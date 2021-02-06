@@ -20,16 +20,6 @@ def get_device():
   return device
 
 
-def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
-  
-  cuda = torch.cuda.is_available()
-
-  dataloader_args = dict(shuffle=shuffle, batch_size=batch_size, num_workers=num_workers,pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
-  dataloader = torch.utils.data.DataLoader(data, ** dataloader_args)
-
-  return dataloader
-
-
 def plot_sample_imagesdataloader(dataloader, num=5, fig_size=(10, 10)):
   dataiter = iter(dataloader)
 
@@ -88,7 +78,7 @@ def plot_results(train_losses, train_acc, test_losses, test_acc):
 def show_misclassified_images(test_images, target_labels, target_predictions,classes, nrow=5, ncol=5):
   fig, axes = plt.subplots(nrows=nrow, ncols=ncol, figsize=(15, 15))
   fig.subplots_adjust(hspace=0.5)
-  fig.suptitle('Misclassified Images in GBN Model')
+  fig.suptitle('Misclassified Images in Model')
   for ax, image, target, prediction in zip(axes.flatten(), test_images, target_labels, target_predictions):
       ax.imshow(image[0])
       ax.set(title='target:{t} prediction:{p}'.format(

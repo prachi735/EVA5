@@ -3,7 +3,8 @@ from tqdm import tqdm
 train_losses = []
 train_acc = []
 
-def train(model, device, train_loader, optimizer,loss_fn):
+
+def train(model, device, train_loader, optimizer, loss_fn):
   model.train()
   pbar = tqdm(train_loader)
   correct = 0
@@ -14,7 +15,7 @@ def train(model, device, train_loader, optimizer,loss_fn):
 
     # Init
     optimizer.zero_grad()
-    # In PyTorch, we need to set the gradients to zero before starting to do backpropragation because PyTorch accumulates the gradients on subsequent backward passes. 
+    # In PyTorch, we need to set the gradients to zero before starting to do backpropragation because PyTorch accumulates the gradients on subsequent backward passes.
     # Because of this, when you start your training loop, ideally you should zero out the gradients so that you do the parameter update correctly.
 
     # Predict
@@ -29,10 +30,13 @@ def train(model, device, train_loader, optimizer,loss_fn):
     optimizer.step()
 
     # Update pbar-tqdm
-    
-    pred = y_pred.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+
+    # get the index of the max log-probability
+    pred = y_pred.argmax(dim=1, keepdim=True)
     correct += pred.eq(target.view_as(pred)).sum().item()
     processed += len(data)
 
-    pbar.set_description(desc= f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100*correct/processed:0.2f}')
+    pbar.set_description(
+        desc=f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100*correct/processed:0.2f}')
     train_acc.append(100*correct/processed)
+

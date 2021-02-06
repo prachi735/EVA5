@@ -60,6 +60,7 @@ def get_album_transforms(norm_mean, norm_std):
         # A.HueSaturationValue(p=0.3),
         A.Normalize(mean=norm_mean, std=norm_std, always_apply=True, p=1.0),
         ToTensorV2()
+        
     ])
     test_transform = A.Compose([A.Normalize(mean=norm_mean, std=norm_std, ),
                                 ToTensorV2()
@@ -81,17 +82,16 @@ def get_torch_transforms(mean, std):
                         tvt.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
                         tvt.RandomRotation((-5.0, 5.0)),
                         # transforms.RandomAffine((-5.0,5.0),fillcolor=1),
-                        #transforms.RandomPerspective(),
-                        tvt.ToTensor(),
+                        #transforms.RandomPerspective(),                    
                         # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
-                        tvt.Normalize(
-                            (mean,), (std,))
+                        tvt.Normalize((mean), (std,)),
+                        tvt.ToTensor()
                         ])
     test = tvt.Compose([
         #  transforms.Resize((28, 28)),
         #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
-        tvt.ToTensor(),
         # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
-        tvt.Normalize((mean,), (std,))
+        tvt.Normalize((mean,), (std,)),
+        tvt.ToTensor()
     ])
     return train,test
