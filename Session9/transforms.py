@@ -29,7 +29,7 @@ def get_album_transforms(norm_mean, norm_std):
     get the train and test transform by albumentations
     '''
     train_transform = A.Compose([
-        A.RGBShift(),
+        #A.RGBShift(),
         A.InvertImg(),
         A.Blur(),
         A.GaussNoise(),
