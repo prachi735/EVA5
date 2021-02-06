@@ -1,5 +1,5 @@
 from tqdm import tqdm
-
+import torch.nn.functional as F
 
 def train(model, device, train_loader, optimizer, epoch, train_losses, train_acc, l1_loss_flag, lamda_l1=0.0001):
 
