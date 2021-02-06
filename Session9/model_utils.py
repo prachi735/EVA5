@@ -13,7 +13,7 @@ def get_scheduler(optimizer, T_max=200):
     return torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=T_max)
 
 
-def loss_function():
+def get_loss_function():
     return nn.CrossEntropyLoss()
 
 
