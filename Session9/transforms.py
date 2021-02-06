@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 import albumentations as A
-
+from albumentations.pytorch.transforms import ToTensorV2
 class AlbumentationsDataset(Dataset):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
@@ -56,10 +56,10 @@ def get_album_transforms(norm_mean, norm_std):
         ], p=0.3),
         A.HueSaturationValue(p=0.3),
         A.Normalize(mean=norm_mean, std=norm_std, always_apply=True, p=1.0),
-        A.pytorch.transforms.ToTensor()
+        ToTensorV2()
     ])
     test_transform = A.Compose([A.Normalize(mean=norm_mean, std=norm_std, ),
-                                A.pytorch.transforms.ToTensor()
+                                ToTensorV2()
                                 ])
     return train_transform, test_transform
 
