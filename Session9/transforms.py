@@ -31,17 +31,20 @@ def get_album_transforms(norm_mean, norm_std):
     '''
     get the train and test transform by albumentations
     '''
-    train_transform = A.Compose([A.HorizontalFlip(p=.2),
-                                 A.VerticalFlip(p=.2),
-                                 A.Rotate(limit=15, p=0.5),
-                                 
+    train_transform = A.Compose([A.Normalize(mean=mean, std=standard_deviation, always_apply=True, p=1.0),
+                                 A.RandomCrop(32, 32),
+                                 A.HorizontalFlip(p=0.5),
+                                 A.GridDistortion(num_steps=5, distort_limit=0.3, interpolation=1,
+                                                  border_mode=4, value=None, mask_value=None, always_apply=False, p=0.5),
+                                 A.ChannelDropout(channel_drop_range=(
+                                     1, 1), fill_value=0, always_apply=False, p=0.5),
+                                 A.Cutout(num_holes=1, max_h_size=16, max_w_size=16,
+                                          fill_value=norm_mean, always_apply=False, p=0.5),
                                  A.Normalize(mean=norm_mean,std=norm_std ),
                                 AP.transforms.ToTensor()
     ])
-
-    test_transform = A.Compose([A.Normalize(
-        mean=[0.49, 0.48, 0.45],
-        std=[0.25, 0.24, 0.26], ),
+    
+    test_transform = A.Compose([A.Normalize(mean=norm_mean,std=norm_std, ),
         AP.transforms.ToTensor()
     ])
     return train_transform, test_transform
