@@ -1,4 +1,5 @@
 import torch 
+import torch.nn.functional as F
 
 test_acc = []
 test_losses = []
