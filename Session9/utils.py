@@ -43,7 +43,7 @@ def plot_sample_imagesdataloader(dataloader, num=5, fig_size=(10, 10)):
       plt.imshow(images[index][0])
 
 
-def get_misclassified_images(model, test_loader, count = 25):
+def get_misclassified_images(model, test_loader, classes, count=25):
 
     test_images = []
     target_labels = []
@@ -51,9 +51,9 @@ def get_misclassified_images(model, test_loader, count = 25):
     for img, target in test_loader:
       prediction = torch.argmax(model(img), dim=1)
       test_images.append(img)
-      target_labels.append(target)
-      target_predictions.append(prediction)
-      
+      target_labels.append(classes[target])
+      target_predictions.append(classes[prediction])
+
 
     test_images = torch.cat(test_images)
     target_labels = torch.cat(target_labels)
@@ -85,7 +85,7 @@ def show_misclassified_images(test_images, target_labels, target_predictions, nr
   fig, axes = plt.subplots(nrows=nrow, ncols=ncol, figsize=(15, 15))
   fig.subplots_adjust(hspace=0.5)
   fig.suptitle('Misclassified Images in GBN Model')
-
+  classes = test_data.classes
   for ax, image, target, prediction in zip(axes.flatten(), test_images, target_labels, target_predictions):
       ax.imshow(image[0])
       ax.set(title='target:{t} prediction:{p}'.format(
