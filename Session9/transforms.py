@@ -1,6 +1,8 @@
 from torch.utils.data import Dataset
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
+from torchvision import  transforms
+
 class AlbumentationsDataset(Dataset):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
@@ -70,3 +72,25 @@ def apply_album_transformation(data, transforms):
         labels=data.targets,
         transform=transforms,
     )
+
+
+def get_torch_transforms(mean, std):
+    train = transforms.Compose([
+                                        # transforms.Resize((28, 28)),
+                                        transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
+                                        transforms.RandomRotation((-5.0, 5.0)),
+                                        # transforms.RandomAffine((-5.0,5.0),fillcolor=1),
+                                        #transforms.RandomPerspective(),
+                                        transforms.ToTensor(),
+                                        # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
+                                        transforms.Normalize(
+                                            (mean,), (std,))
+                                        ])
+    test = transforms.Compose([
+        #  transforms.Resize((28, 28)),
+        #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
+        transforms.ToTensor(),
+        # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
+        transforms.Normalize((mean,), (std,))
+    ])
+    return train,test
