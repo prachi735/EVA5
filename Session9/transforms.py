@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 import albumentations as A
-from albumentations.pytorch. import transforms as at
+from albumentations.pytorch import transforms as at
 from torchvision import  transforms as tvt
 
 class AlbumentationsDataset(Dataset):
