@@ -35,7 +35,7 @@ def get_album_transforms(norm_mean, norm_std):
                                  A.VerticalFlip(p=.2),
                                  A.Rotate(limit=15, p=0.5),
                                  
-                                 A.Normalize(mean=[0.49, 0.48, 0.45],        std=[0.25, 0.24, 0.26], ),
+                                 A.Normalize(mean=norm_mean,std=norm_std ),
                                 AP.transforms.ToTensor()
     ])
 
