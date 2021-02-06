@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 import albumentations as A
-from albumentations.pytorch import transforms as at
+from albumentations.pytorch.transforms import ToTensorV2 
 from torchvision import  transforms as tvt
 
 class AlbumentationsDataset(Dataset):
@@ -58,10 +58,10 @@ def get_album_transforms(norm_mean, norm_std):
         # ], p=0.3),
         # A.HueSaturationValue(p=0.3),
         A.Normalize(mean=norm_mean, std=norm_std, always_apply=True, p=1.0),
-        at.ToTensorV2()
+        ToTensorV2()
     ])
     test_transform = A.Compose([A.Normalize(mean=norm_mean, std=norm_std, ),
-                                at.ToTensorV2()
+                                ToTensorV2()
                                 ])
     return train_transform, test_transform
 
