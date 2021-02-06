@@ -1,5 +1,6 @@
 import albumentations as A
 import albumentations.pytorch as AP
+import albumentations.core.composition as AC
 
 from torchvision import transforms
 from torch.utils.data import Dataset
@@ -55,26 +56,26 @@ def get_album_transforms(norm_mean, norm_std):
         A.RandomRotate90(),
         A.Flip(),
         A.Transpose(),
-        A.Oneof([A.RandomSizedCrop(min_max_height=[15,15], height=8, width=8, w2h_ratio=1.0, interpolation=1,
+        AC.Oneof([A.RandomSizedCrop(min_max_height=[15,15], height=8, width=8, w2h_ratio=1.0, interpolation=1,
                                    always_apply=False, p=1.0), 
                                    A.RandomCrop(height=8, width=8, always_apply=False, p=1.0)]),
-        A.OneOf([
+        AC.OneOf([
             A.IAAAdditiveGaussianNoise(),
             A.GaussNoise(),
         ], p=0.2),
-        A.OneOf([
+        AC.OneOf([
             A.MotionBlur(p=.2),
             A.MedianBlur(blur_limit=3, p=0.1),
             A.Blur(blur_limit=3, p=0.1),
         ], p=0.2),
-        A.ShiftScaleRotate(shift_limit=0.0625,
+        AC.ShiftScaleRotate(shift_limit=0.0625,
                            scale_limit=0.2, rotate_limit=45, p=0.2),
-        A.OneOf([
+        AC.OneOf([
             A.OpticalDistortion(p=0.3),
             A.GridDistortion(p=.1),
             A.IAAPiecewiseAffine(p=0.3),
         ], p=0.2),
-        A.OneOf([
+        AC.OneOf([
             A.CLAHE(clip_limit=2),
             A.IAASharpen(),
             A.IAAEmboss(),
