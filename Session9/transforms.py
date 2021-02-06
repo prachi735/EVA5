@@ -84,14 +84,16 @@ def get_torch_transforms(mean, std):
                         # transforms.RandomAffine((-5.0,5.0),fillcolor=1),
                         #transforms.RandomPerspective(),                    
                         # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
-                        tvt.Normalize((mean), (std,)),
-                        tvt.ToTensor()
+                        tvt.ToTensor(),
+                        tvt.Normalize((mean), (std,))
+                        
                         ])
     test = tvt.Compose([
         #  transforms.Resize((28, 28)),
         #  transforms.ColorJitter(brightness=0.10, contrast=0.1, saturation=0.10, hue=0.1),
         # The mean and std have to be sequences (e.g., tuples), therefore you should add a comma after the values.
-        tvt.Normalize((mean,), (std,)),
-        tvt.ToTensor()
+        tvt.ToTensor(),
+        tvt.Normalize((mean,), (std,))
+        
     ])
     return train,test
