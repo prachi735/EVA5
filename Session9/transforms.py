@@ -31,7 +31,7 @@ def get_album_transforms(norm_mean, norm_std):
         A.Transpose(),
         A.Oneof([A.RandomSizedCrop(min_max_height=[15,15], height=8, width=8, w2h_ratio=1.0, interpolation=1,
                                    always_apply=False, p=1.0), 
-                                   A.RandomCrop(height=8, width=8, always_apply=False, p=1.0)]),
+                                   A.RandomCrop(height=8, width=8, always_apply=False, p=1.0)],p=0.5),
         A.OneOf([
             A.IAAAdditiveGaussianNoise(),
             A.GaussNoise(),
