@@ -14,7 +14,7 @@ class CIFARData(CIFAR10):
     def __getitem__(self, index):
         im, label = super().__getitem__(index)
         if self.transforms:
-            im = pyT(self.transforms(im))
+            im = pyT(self.transforms(image=im))
         return im, label
 
 
