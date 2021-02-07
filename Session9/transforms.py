@@ -1,8 +1,8 @@
-from torch.utils.data import Dataset, dataset
+from torch.utils.data import  dataset
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2 
 from torchvision import  transforms as tvt
-
+import torch.tensor as pyT
 
 class CIFARData(dataset.CIFAR10):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
@@ -13,7 +13,7 @@ class CIFARData(dataset.CIFAR10):
     def __getitem__(self, index):
         im, label = super().__getitem__(index)
         if self.transform:
-            ima = self.transform(im)
+            im = pyT(self.transform(im))
         return im, label
 
 
