@@ -8,7 +8,7 @@ class CIFARData(CIFAR10):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
     def __init__(self, path,train, download, transforms=None):
-        super().__init__(path, train, download)
+        super().__init__(path, train=train, download=download)
         self.transforms = transforms
 
     def __getitem__(self, index):
