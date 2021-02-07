@@ -1,27 +1,20 @@
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, dataset
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2 
 from torchvision import  transforms as tvt
 
 
-class AlbumentationsDataset(Dataset):
+class CIFARData(dataset.CIFAR10):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
-    def __init__(self, rimages, labels, transform=None):
-        self.rimages = rimages
-        self.labels = labels
-        self.transform = transform
+    def __init__(self, transform=None):
+        super().__init__()
 
-    def __len__(self):
-        return len(self.rimages)
-
-    def __getitem__(self, idx):
-        label = self.labels[idx]
-        image = self.rimages[idx]
+    def __getitem__(self, index):
+        im, label = super().__getitem__(index)
         if self.transform:
-            augmented = self.transform(image=image)
-            image = augmented['image']
-        return image, label
+            ima = self.transform(im)
+        return im, label
 
 
 def get_album_transforms(norm_mean, norm_std):
@@ -47,6 +40,8 @@ def apply_album_transformation(data, transforms):
     return AlbumentationsDataset(
         rimages=data.data,
         labels=data.targets,
+        class_to_idx = data.class_to_idx,
+        classes = data.classes,
         transform=transforms,
     )
 
