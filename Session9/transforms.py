@@ -7,13 +7,14 @@ import torch.tensor as pyT
 class CIFARData(CIFAR10):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
-    def __init__(self, transform=None):
-        super().__init__()
+    def __init__(self, path,train, download, transforms=None):
+        super().__init__(path, train, download)
+        self.transforms = transforms
 
     def __getitem__(self, index):
         im, label = super().__getitem__(index)
-        if self.transform:
-            im = pyT(self.transform(im))
+        if self.transforms:
+            im = pyT(self.transforms(im))
         return im, label
 
 
