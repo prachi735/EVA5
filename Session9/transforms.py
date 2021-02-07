@@ -1,4 +1,3 @@
-from torchvision.datasets import CIFAR10
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2 
 from torchvision import  transforms as tvt
