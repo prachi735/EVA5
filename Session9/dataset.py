@@ -2,6 +2,20 @@
 from torchvision import datasets
 import torch
 
+
+class CIFARData(CIFAR10):
+    """__init__ and __len__ functions are the same as in TorchvisionDataset"""
+
+    def __init__(self, path, train, download, transforms=None):
+        super().__init__(path, train=train, download=download)
+        self.transforms = transforms
+
+    def __getitem__(self, index):
+        im, label = super().__getitem__(index)
+        if self.transforms:
+            im = self.transforms(image=im)
+        return im, label
+
 def get_data(train_transforms, test_transforms):
     train = datasets.CIFAR10('./data', train=True, download=True,transform=train_transforms)
     test = datasets.CIFAR10('./data', train=False, download=True,transform=test_transforms)

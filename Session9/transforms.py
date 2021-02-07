@@ -4,19 +4,6 @@ from albumentations.pytorch.transforms import ToTensorV2
 from torchvision import  transforms as tvt
 import torch.tensor as pyT
 
-class CIFARData(CIFAR10):
-    """__init__ and __len__ functions are the same as in TorchvisionDataset"""
-
-    def __init__(self, path,train, download, transforms=None):
-        super().__init__(path, train=train, download=download)
-        self.transforms = transforms
-
-    def __getitem__(self, index):
-        im, label = super().__getitem__(index)
-        if self.transforms:
-            im = pyT(self.transforms(image=im))
-        return im, label
-
 
 def get_album_transforms(norm_mean, norm_std):
     '''
