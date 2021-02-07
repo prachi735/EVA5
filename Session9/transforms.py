@@ -1,10 +1,10 @@
-from torch.utils.data import  dataset
+from torchvision.datasets import CIFAR10
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2 
 from torchvision import  transforms as tvt
 import torch.tensor as pyT
 
-class CIFARData(dataset.CIFAR10):
+class CIFARData(CIFAR10):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
     def __init__(self, transform=None):
