@@ -30,7 +30,7 @@ class CIFARData(CIFAR10):
         if self.target_transform is not None:
             target = self.target_transform(target)
         
-        img = torch.from_numpy(img)
+        #img = torch.from_file(img)
 
         return img, target
 
