@@ -1,7 +1,7 @@
 from torchvision.datasets import CIFAR10
 from torchvision import datasets
 import torch
-
+from PIL import Image
 
 class CIFARData(CIFAR10):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
@@ -22,7 +22,7 @@ class CIFARData(CIFAR10):
         
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
-        # img = Image.fromarray(img)
+        img = Image.fromarray(img)
 
         if self.transform is not None:
             img = self.transform(img)
