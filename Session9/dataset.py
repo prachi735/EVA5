@@ -26,7 +26,7 @@ class CIFARData(CIFAR10):
         #img = np.from
 
         if self.transform is not None:
-            img = self.transform(image=img)
+            img = self.transform(image=img)['image']
 
         if self.target_transform is not None:
             target = self.target_transform(target)
