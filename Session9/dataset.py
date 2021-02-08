@@ -2,7 +2,7 @@ from torchvision.datasets import CIFAR10
 from torchvision import datasets
 import torch
 from PIL import Image
-
+import numpy as np
 class CIFARData(CIFAR10):
     def __init__(self, path, train, download, transform=None):
     
@@ -22,7 +22,8 @@ class CIFARData(CIFAR10):
 
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
-        img = Image.fromarray(img)
+        #img = Image.fromarray(img)
+        img = np.from
 
         if self.transform is not None:
             img = self.transform(image=img)

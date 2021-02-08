@@ -13,6 +13,7 @@ def get_album_transforms(norm_mean, norm_std):
         # A.Blur(blur_limit=11, p=1),
         # A.RandomBrightness(p=1),
         # A.CLAHE(p=1),
+        A.Normalize(mean=norm_mean, std=norm_std, ),
         ToTensorV2()
         
     ])
