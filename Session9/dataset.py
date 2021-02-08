@@ -22,13 +22,15 @@ class CIFARData(CIFAR10):
         
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
-        img = Image.fromarray(img)
+        #img = Image.fromarray(img)
 
         if self.transform is not None:
             img = self.transform(img)
 
         if self.target_transform is not None:
             target = self.target_transform(target)
+        
+        img = torch.from_numpy(img)
 
         return img, target
 
