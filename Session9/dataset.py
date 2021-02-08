@@ -4,13 +4,12 @@ import torch
 from PIL import Image
 
 class CIFARData(CIFAR10):
-    """__init__ and __len__ functions are the same as in TorchvisionDataset"""
-
-    def __init__(self, path, train, download, transforms=None):
+    def __init__(self, path, train, download, transform=None):
+    
         super().__init__(path, train=train, download=download)
-        self.transforms = transforms
+        self.transform = transform
 
-    def __getitem__(self, index: int) -> Tuple[Any, Any]:
+    def __getitem__(self, index: int):
         """
         Args:
             index (int): Index
@@ -18,14 +17,15 @@ class CIFARData(CIFAR10):
         Returns:
             tuple: (image, target) where target is index of the target class.
         """
-        img, target = self.data[index], self.targets[index]
+
+        img, target = img, target = self.data[index], self.targets[index]
 
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
-        #img = Image.fromarray(img)
+        img = Image.fromarray(img)
 
         if self.transform is not None:
-            img = self.transform(img)
+            img = self.transform(image=img)
 
         if self.target_transform is not None:
             target = self.target_transform(target)
