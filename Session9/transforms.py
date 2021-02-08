@@ -1,7 +1,6 @@
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2 
 from torchvision import  transforms as tvt
-import torch.tensor as pyT
 
 
 def get_album_transforms(norm_mean, norm_std):
@@ -9,7 +8,7 @@ def get_album_transforms(norm_mean, norm_std):
     get the train and test transform by albumentations
     '''
     train_transform = A.Compose([
-        A.HorizontalFlip(p=1),
+        #A.HorizontalFlip(p=1),
         # A.RGBShift(p=1),
         # A.Blur(blur_limit=11, p=1),
         # A.RandomBrightness(p=1),
@@ -21,16 +20,6 @@ def get_album_transforms(norm_mean, norm_std):
                                 ToTensorV2()
                                 ])
     return train_transform, test_transform
-
-
-def apply_album_transformation(data, transforms):
-    return AlbumentationsDataset(
-        rimages=data.data,
-        labels=data.targets,
-        class_to_idx = data.class_to_idx,
-        classes = data.classes,
-        transform=transforms,
-    )
 
 
 def get_torch_transforms(mean, std):
