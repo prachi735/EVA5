@@ -16,13 +16,13 @@ class CIFARData(CIFAR10):
             index (int): Index
 
         Returns:
-            tuple: (image, target) where target is index of the target class.
+            tuple: (image, target) where target is index of the target class and Image is an tensor array
         """
         img, target = self.data[index], self.targets[index]
         
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
-        #img = Image.fromarray(img)
+        img = Image.fromarray(img)
 
         if self.transform is not None:
             img = self.transform(img)
