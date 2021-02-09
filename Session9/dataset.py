@@ -6,7 +6,7 @@ import numpy as np
 class CIFARData(CIFAR10):
     def __init__(self, path, train, download, transform=None):
     
-        super().__init__(path, train=train, download=download)
+        super(CIFARData, self).__init__(path, train=train, download=download)
         self.transform = transform
 
     def __getitem__(self, index: int):
@@ -18,8 +18,8 @@ class CIFARData(CIFAR10):
             tuple: (image, target) where target is index of the target class.
         """
 
-        #img, target = self.data[index], self.targets[index]
-        img, target = super().__getitem__(index)
+        img, target = self.data[index], self.targets[index]
+        #img, target = super().__getitem__(index)
 
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
