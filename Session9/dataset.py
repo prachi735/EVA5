@@ -18,7 +18,8 @@ class CIFARData(CIFAR10):
             tuple: (image, target) where target is index of the target class.
         """
 
-        img, target = self.data[index], self.targets[index]
+        #img, target = self.data[index], self.targets[index]
+        img, target = super.__getitem__(index)
 
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
