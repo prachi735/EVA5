@@ -1,11 +1,8 @@
 import torch
 import torch.nn.functional as F
 
-test_losses = []
-test_acc = []
 
-
-def test(model, device, test_loader):
+def test(model, device, test_loader, test_losses = [] ,test_acc = []) -> None:
     model.eval()
     test_loss = 0
     correct = 0
