@@ -8,7 +8,9 @@ def train(model, device, train_loader, optimizer, loss_fn, train_losses=[], trai
   correct = 0
   processed = 0
   for batch_idx, (data, target) in enumerate(pbar):
-    # get samples
+    print(target, type(target))
+    print(type(data),data)
+    
     data, target = data.to(device), target.to(device)
 
     # Init
