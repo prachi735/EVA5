@@ -5,23 +5,17 @@ from PIL import Image
 import numpy as np
 
 
-class AlbumentationsDataset(Dataset):
-    """__init__ and __len__ functions are the same as in TorchvisionDataset"""
+class Cifar10AlbuDataset(datasets.CIFAR10):
+    def __init__(self, root="~/data/cifar10", train=True, download=True, transform=None):
+        super().__init__(root=root, train=train, download=download, transform=transform)
 
-    def __init__(self, rimages, labels, transform=None):
-        self.rimages = rimages
-        self.labels = labels
-        self.transform = transform
+    def __getitem__(self, index):
+        image, label = self.data[index], self.targets[index]
 
-    def __len__(self):
-        return len(self.rimages)
+        if self.transform is not None:
+            transformed = self.transform(image=image)
+            image = transformed["image"]
 
-    def __getitem__(self, idx):
-        label = self.labels[idx]
-        image = self.rimages[idx]
-        if self.transform:
-            augmented = self.transform(image=image)
-            image = augmented['image']
         return image, label
 
 
