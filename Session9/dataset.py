@@ -21,7 +21,7 @@ class AlbumentationsDataset(Dataset):
         image = self.rimages[idx]
         if self.transform:
             augmented = self.transform(image=image)
-            image = augmented['image']
+            image = torch.Tensor(augmented['image'])
         return image, label
 
 
