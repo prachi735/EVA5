@@ -1,3 +1,4 @@
+from typing import Callable, Optional
 from torchvision.datasets import CIFAR10
 from torchvision import datasets
 import torch
@@ -6,10 +7,18 @@ import numpy as np
 
 
 class CIFARData(CIFAR10):
-    def __init__(self, path, train, download, transform=None):
+    def __init__(
+            self,
+            root: str,
+            train: bool = True,
+            transform: Optional[Callable] = None,
+            target_transform: Optional[Callable] = None,
+            download: bool = False,
+    ) -> None:
     
-        super(CIFARData, self).__init__(path, train=train, download=download)
+        super(CIFAR10, self).__init__(root, train=train, download=download)
         self.transform = transform
+        self.target_transform = target_transform
 
     def __len__(self) -> int:
         return len(self.data)
