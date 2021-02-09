@@ -1,10 +1,8 @@
-from typing import Callable, Optional
-from torchvision.datasets import CIFAR10
+from torch.utils.data.dataset import Dataset
 from torchvision import datasets
 import torch
 from PIL import Image
 import numpy as np
-
 
 class AlbumentationsDataset(Dataset):
     
