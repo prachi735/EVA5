@@ -20,11 +20,11 @@ def get_device():
   return device
 
 
-def plot_sample_images(dataloader, classes, num=5, fig_size=(10, 10)):
+def plot_sample_images(dataloader, classes, ncols=5, nrows=5, fig_size=(10, 10)):
 
   images, targets = next(iter(dataloader))
   print(images.shape)
-  fig, axes = plt.subplots(ncols=5, nrows=5, figsize=(10, 10))
+  fig, axes = plt.subplots(ncols=ncols, nrows=nrows, figsize=(10, 10))
   fig.subplots_adjust(hspace=0.5)
   fig.suptitle('Sample Images in Data')
   for ax, image, target in zip(axes.flatten(), images, targets):
