@@ -20,17 +20,19 @@ def get_device():
   return device
 
 
-def plot_sample_imagesdataloader(dataloader, num=5, fig_size=(10, 10)):
-  dataiter = iter(dataloader)
+def plot_sample_images(dataloader, classes, num=5, fig_size=(10, 10)):
 
-  images, labels = dataiter.next()
+  images, targets = next(iter(dataloader))
+  print(images.shape)
+  fig, axes = plt.subplots(ncols=5, nrows=5, figsize=(10, 10))
+  fig.subplots_adjust(hspace=0.5)
+  fig.suptitle('Sample Images in Data')
+  for ax, image, target in zip(axes.flatten(), images, targets):
+      ax.imshow(image[0])
+      ax.set(title='{t}'.format(
+          t=classes[target.item()]))
+      ax.axis('off')
 
-  figure = plt.figure(figsize=fig_size)
-  num_of_images = num
-  for index in range(1, num_of_images + 1):
-      plt.subplot(5, 5, index)
-      plt.axis('off')
-      plt.imshow(images[index][0])
 
 
 def get_misclassified_images(model, test_loader, count=25):
