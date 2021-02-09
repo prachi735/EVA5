@@ -19,8 +19,8 @@ class AlbumentationsDataset(Dataset):
         image = self.data[idx]
         target = self.targets[idx]
 
-        if self.transform:
-            augmented = self.transform(image=image)
+        if self.transforms:
+            augmented = self.transforms(image=image)
             image = augmented['image']
         return image, target
 
