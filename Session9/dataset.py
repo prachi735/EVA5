@@ -6,51 +6,35 @@ from PIL import Image
 import numpy as np
 
 
-class CIFARData(CIFAR10):
-    def __init__(
-            self,
-            root: str,
-            train: bool = True,
-            transform: Optional[Callable] = None,
-            target_transform: Optional[Callable] = None,
-            download: bool = False,
-    ) -> None:
+class AlbumentationsDataset(Dataset):
+    
+    def __init__(self, data, targets, classes, transforms=None):
+        self.data = data
+        self.targets = targets
+        self.classes = classes
+        self.transforms = transforms
 
-        CIFAR10.__init__(self,
-                         root,
-                         train,
-                         transform,
-                         target_transform,
-                         download)
-
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self.data)
 
-    def __getitem__(self, index: int):
-        """
-        Args:
-            index (int): Index
+    def __getitem__(self, idx):
+        image = self.data[idx]
+        target = self.targets[idx]
 
-        Returns:
-            tuple: (image, target) where target is index of the target class.
-        """
-
-        img, target = self.data[index], self.targets[index]
-
-        if self.transform is not None:
-            img = self.transform(image=img)['image']
-
-        if self.target_transform is not None:
-            target = self.target_transform(target)
-
-        return img, target
+        if self.transform:
+            augmented = self.transform(image=image)
+            image = augmented['image']
+        return image, target
 
 
-def get_data(train_transforms, test_transforms):
+def get_data(train_transforms, test_transforms, alb_dataset=True):
     train = datasets.CIFAR10('./data', train=True,
                              download=True, transform=train_transforms)
     test = datasets.CIFAR10('./data', train=False,
                             download=True, transform=test_transforms)
+    if alb_dataset:
+      train = AlbumentationsDataset(train.data, train.targets, train.classes, train_transforms)
+      test = AlbumentationsDataset(train.data, train.targets, train.classes, test_transforms)
     return train, test
 
 
