@@ -31,7 +31,6 @@ def get_data(train_transforms, test_transforms, alb_dataset=True):
     test = datasets.CIFAR10('./data', train=False,
                             download=True, transform=test_transforms)
     if alb_dataset:
-      print("creating AlbumentationsDataset.....")
       train = AlbumentationsDataset(train.data, train.targets, train.classes, train_transforms)
       test = AlbumentationsDataset(test.data, test.targets, test.classes, test_transforms)
     return train, test
