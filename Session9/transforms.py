@@ -8,11 +8,13 @@ def get_album_transforms(norm_mean, norm_std):
     get the train and test transform by albumentations
     '''
     train_transform = A.Compose([
-        #A.HorizontalFlip(p=1),
-        # A.RGBShift(p=1),
-        # A.Blur(blur_limit=11, p=1),
-        # A.RandomBrightness(p=1),
-        # A.CLAHE(p=1),
+        A.SmallestMaxSize(max_size=160),
+        A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.05,
+                           rotate_limit=15, p=0.5),
+        A.RandomCrop(height=128, width=128),
+        A.RGBShift(r_shift_limit=15, g_shift_limit=15,
+                   b_shift_limit=15, p=0.5),
+        A.RandomBrightnessContrast(p=0.5),
         A.Normalize(mean=norm_mean, std=norm_std, ),
         ToTensorV2()
         
