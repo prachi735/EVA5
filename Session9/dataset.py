@@ -4,36 +4,44 @@ import torch
 from PIL import Image
 import numpy as np
 
+
 class AlbumentationsDataset(Dataset):
-    
-    def __init__(self, data, targets, classes, transform=None):
-        self.data = data
-        self.targets = targets
-        self.classes = classes
+    """__init__ and __len__ functions are the same as in TorchvisionDataset"""
+
+    def __init__(self, rimages, labels, transform=None):
+        self.rimages = rimages
+        self.labels = labels
         self.transform = transform
 
     def __len__(self):
-        return len(self.data)
+        return len(self.rimages)
 
     def __getitem__(self, idx):
-        image = self.data[idx]
-        target = self.targets[idx]
-
+        label = self.labels[idx]
+        image = self.rimages[idx]
         if self.transform:
             augmented = self.transform(image=image)
             image = augmented['image']
-        return image, target
+        return image, label
 
 
 def get_data(train_transforms, test_transforms, alb_dataset=True):
-    train = datasets.CIFAR10('./data', train=True,
-                             download=True, transform=train_transforms)
-    test = datasets.CIFAR10('./data', train=False,
-                            download=True, transform=test_transforms)
-    if alb_dataset:
-      train = AlbumentationsDataset(train.data, train.targets, train.classes, train_transforms)
-      test = AlbumentationsDataset(test.data, test.targets, test.classes, test_transforms)
-    return train, test
+    train_set = datasets.CIFAR10(
+        root='./data', train=True, download=True)
+    test_set = datasets.CIFAR10(
+        root='./data', train=False, download=True)
+    train_set = AlbumentationsDataset(
+        rimages=train_set.data,
+        labels=train_set.targets,
+        transform=train_transforms,
+    )
+
+    test_set = AlbumentationsDataset(
+        rimages=test_set.data,
+        labels=test_set.targets,
+        transform=test_transforms,
+    )
+    return train_set, test_set
 
 
 def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
