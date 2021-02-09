@@ -1,10 +1,8 @@
-from torch.utils.data.dataset import Dataset
-from torchvision import datasets
-import torch
-from PIL import Image
-import numpy as np
+import torchvision
 
-
+import albumentations as A
+import albumentations.pytorch as AP
+from torch.utils.data import Dataset
 class AlbumentationsDataset(Dataset):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
@@ -25,31 +23,45 @@ class AlbumentationsDataset(Dataset):
         return image, label
 
 
-def get_data(train_transforms, test_transforms, alb_dataset=True):
-    train_set = datasets.CIFAR10(
+def get_album_transforms(norm_mean, norm_std):
+    """get the train and test transform by albumentations"""
+    album_train_transform = A.Compose([A.HorizontalFlip(p=.2),
+                                       A.VerticalFlip(p=.2),
+                                       A.Rotate(limit=15, p=0.5),
+                                       A.Normalize(
+        mean=[0.49, 0.48, 0.45],
+        std=[0.25, 0.24, 0.26], ),
+        AP.transforms.ToTensor()
+    ])
+
+    album_test_transform = A.Compose([A.Normalize(
+        mean=[0.49, 0.48, 0.45],
+        std=[0.25, 0.24, 0.26], ),
+        AP.transforms.ToTensor()
+    ])
+    return(album_train_transform, album_test_transform)
+
+
+def get_datasets():
+    """Extract and transform the data"""
+    train_set = torchvision.datasets.CIFAR10(
         root='./data', train=True, download=True)
-    test_set = datasets.CIFAR10(
+    test_set = torchvision.datasets.CIFAR10(
         root='./data', train=False, download=True)
+    return(train_set, test_set)
+
+
+def trasnform_datasets(train_set, test_set, train_transform, test_transform):
+    """Transform the data"""
     train_set = AlbumentationsDataset(
         rimages=train_set.data,
         labels=train_set.targets,
-        transform=train_transforms,
+        transform=train_transform,
     )
 
     test_set = AlbumentationsDataset(
         rimages=test_set.data,
         labels=test_set.targets,
-        transform=test_transforms,
+        transform=test_transform,
     )
-    return train_set, test_set
-
-
-def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
-
-    cuda = torch.cuda.is_available()
-
-    dataloader_args = dict(shuffle=shuffle, batch_size=batch_size, num_workers=num_workers,
-                           pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
-    dataloader = torch.utils.data.DataLoader(data, ** dataloader_args)
-
-    return dataloader
+    return(train_set, test_set)
