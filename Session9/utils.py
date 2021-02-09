@@ -1,18 +1,16 @@
 import torch
 import matplotlib.pyplot as plt
+import random
+import numpy as np
 
-def seed_torch():
-  SEED = 3
-
-  # is cuda available
+def seed_everything(seed=1):
+  ''' Seed for reproducability '''
+  random.seed(seed)
+  np.random.seed(seed)
+  torch.manual_seed(seed)  # is cuda available
   cuda = torch.cuda.is_available()
-  print("CUDA Available?", cuda)
-
-  torch.manual_seed(SEED)
-
   if cuda:
-    torch.cuda.manual_seed(SEED)
-
+      torch.cuda.manual_seed_all(seed)
 
 def get_device():
   use_cuda = torch.cuda.is_available()
