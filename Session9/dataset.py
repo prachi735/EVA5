@@ -15,12 +15,13 @@ class CIFARData(CIFAR10):
             target_transform: Optional[Callable] = None,
             download: bool = False,
     ) -> None:
-    
-        self.root = root
-        self.train = train
-        self.transform = transform
-        self.target_transform = target_transform
-        self.download = download
+
+        CIFAR10.__init__(self,
+                         root,
+                         train,
+                         transform,
+                         target_transform,
+                         download)
 
     def __len__(self) -> int:
         return len(self.data)
@@ -35,7 +36,7 @@ class CIFARData(CIFAR10):
         """
 
         img, target = self.data[index], self.targets[index]
-        
+
         if self.transform is not None:
             img = self.transform(image=img)['image']
 
@@ -44,18 +45,21 @@ class CIFARData(CIFAR10):
 
         return img, target
 
+
 def get_data(train_transforms, test_transforms):
-    train = datasets.CIFAR10('./data', train=True, download=True,transform=train_transforms)
-    test = datasets.CIFAR10('./data', train=False, download=True,transform=test_transforms)
+    train = datasets.CIFAR10('./data', train=True,
+                             download=True, transform=train_transforms)
+    test = datasets.CIFAR10('./data', train=False,
+                            download=True, transform=test_transforms)
     return train, test
 
 
 def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
 
-  cuda = torch.cuda.is_available()
+    cuda = torch.cuda.is_available()
 
-  dataloader_args = dict(shuffle=shuffle, batch_size=batch_size, num_workers=num_workers,
-                         pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
-  dataloader = torch.utils.data.DataLoader(data, ** dataloader_args)
+    dataloader_args = dict(shuffle=shuffle, batch_size=batch_size, num_workers=num_workers,
+                           pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
+    dataloader = torch.utils.data.DataLoader(data, ** dataloader_args)
 
-  return dataloader
+    return dataloader
