@@ -6,11 +6,11 @@ import numpy as np
 
 class AlbumentationsDataset(Dataset):
     
-    def __init__(self, data, targets, classes, transforms=None):
+    def __init__(self, data, targets, classes, transform=None):
         self.data = data
         self.targets = targets
         self.classes = classes
-        self.transforms = transforms
+        self.transform = transform
 
     def __len__(self):
         return len(self.data)
@@ -19,8 +19,8 @@ class AlbumentationsDataset(Dataset):
         image = self.data[idx]
         target = self.targets[idx]
 
-        if self.transforms:
-            augmented = self.transforms(image=image)
+        if self.transform:
+            augmented = self.transform(image=image)
             image = augmented['image']
         return image, target
 
@@ -32,7 +32,7 @@ def get_data(train_transforms, test_transforms, alb_dataset=True):
                             download=True, transform=test_transforms)
     if alb_dataset:
       train = AlbumentationsDataset(train.data, train.targets, train.classes, train_transforms)
-      test = AlbumentationsDataset(train.data, train.targets, train.classes, test_transforms)
+      test = AlbumentationsDataset(test.data, test.targets, test.classes, test_transforms)
     return train, test
 
 
