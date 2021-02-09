@@ -3,6 +3,8 @@ import torchvision
 import albumentations as A
 import albumentations.pytorch as AP
 from torch.utils.data import Dataset
+
+
 class AlbumentationsDataset(Dataset):
     """__init__ and __len__ functions are the same as in TorchvisionDataset"""
 
@@ -65,3 +67,13 @@ def trasnform_datasets(train_set, test_set, train_transform, test_transform):
         transform=test_transform,
     )
     return(train_set, test_set)
+
+def get_dataloader(data, shuffle=True, batch_size=128, num_workers=4, pin_memory=True):
+
+    cuda = torch.cuda.is_available()
+
+    dataloader_args = dict(shuffle=shuffle, batch_size=batch_size, num_workers=num_workers,
+                           pin_memory=pin_memory) if cuda else dict(shuffle=True, batch_size=64)
+    dataloader = torch.utils.data.DataLoader(data, ** dataloader_args)
+
+    return dataloader
