@@ -10,16 +10,17 @@ class CIFARData(CIFAR10):
     def __init__(
             self,
             root: str,
-            #train: bool = True,
+            train: bool = True,
             transform: Optional[Callable] = None,
             target_transform: Optional[Callable] = None,
-            #download: bool = False,
+            download: bool = False,
     ) -> None:
     
-        super(CIFARData, self).__init__(root, transform=transform,
-                                      target_transform=target_transform)
-        #self.transform = transform
-        #self.target_transform = target_transform
+        self.root = root
+        self.train = train
+        self.transform = transform
+        self.target_transform = target_transform
+        self.download = download
 
     def __len__(self) -> int:
         return len(self.data)
