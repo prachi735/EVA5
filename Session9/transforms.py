@@ -4,25 +4,22 @@ from torchvision import transforms
 
 
 def get_album_transforms(norm_mean, norm_std):
-    '''
-    get the train and test transform by albumentations
-    '''
-    train_transform = A.Compose([
-        #A.HorizontalFlip(p=1),
-        # A.RGBShift(p=1),
-        # A.Blur(blur_limit=11, p=1),
-        # A.RandomBrightness(p=1),
-        # A.CLAHE(p=1),
-        A.Normalize(mean=norm_mean, std=norm_std, ),
-        ToTensorV2()
-
+    """get the train and test transform by albumentations"""
+    album_train_transform = A.Compose([A.HorizontalFlip(p=.2),
+                                       A.VerticalFlip(p=.2),
+                                       A.Rotate(limit=15, p=0.5),
+                                       A.Normalize(
+        mean=[0.49, 0.48, 0.45],
+        std=[0.25, 0.24, 0.26], ),
+        AP.transforms.ToTensor()
     ])
-    test_transform = A.Compose([
-        A.Normalize(mean=norm_mean, std=norm_std, ),
-        ToTensorV2()
-    ])
-    return train_transform, test_transform
 
+    album_test_transform = A.Compose([A.Normalize(
+        mean=[0.49, 0.48, 0.45],
+        std=[0.25, 0.24, 0.26], ),
+        AP.transforms.ToTensor()
+    ])
+    return(album_train_transform, album_test_transform)
 
 def get_torch_transforms(mean, std):
     train_transforms = transforms.Compose([
