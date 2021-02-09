@@ -9,7 +9,7 @@ import numpy as np
 class CIFARData(CIFAR10):
     def __init__(self, path, train, download, transform=None) -> None:
 
-        super(CIFARData, self).__init__(path, train=train, download=download)
+        super().__init__(path, train=train, download=download)
         self.transform = transform
     
     def __len__(self) -> int:
