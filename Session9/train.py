@@ -2,19 +2,18 @@ from tqdm import tqdm
 
 
 def train(model, device, train_loader, optimizer, loss_fn, train_losses=[], train_acc=[]) -> None: 
-
   model.train()
   pbar = tqdm(train_loader)
   correct = 0
   processed = 0
   for batch_idx, (data, target) in enumerate(pbar):
-    
+    # get samples
     data, target = data.to(device), target.to(device)
 
     # Init
     optimizer.zero_grad()
     # In PyTorch, we need to set the gradients to zero before starting to do backpropragation because PyTorch accumulates the gradients on subsequent backward passes.
-    # Because of this, when you start your training loop, ideally you should zero ut the gradients so that you do the parameter update correctly.
+    # Because of this, when you start your training loop, ideally you should zero out the gradients so that you do the parameter update correctly.
 
     # Predict
     y_pred = model(data)
