@@ -3,11 +3,16 @@ from torchvision import datasets
 import torch
 from PIL import Image
 import numpy as np
+
+
 class CIFARData(CIFAR10):
     def __init__(self, path, train, download, transform=None):
     
         super(CIFARData, self).__init__(path, train=train, download=download)
         self.transform = transform
+
+    def __len__(self) -> int:
+        return len(self.data)
 
     def __getitem__(self, index: int):
         """
@@ -19,11 +24,6 @@ class CIFARData(CIFAR10):
         """
 
         img, target = self.data[index], self.targets[index]
-        #img, target = super().__getitem__(index)
-
-        # doing this so that it is consistent with all other datasets
-        # to return a PIL Image
-        # img = Image.fromarray(img)
         
         if self.transform is not None:
             img = self.transform(image=img)['image']
