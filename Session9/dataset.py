@@ -18,7 +18,7 @@ class CIFARData(CIFAR10):
             tuple: (image, target) where target is index of the target class.
         """
 
-        img, target = self.data[index], self.targets[index]
+        image, target = self.data[index], self.targets[index]
         #img, target = super().__getitem__(index)
 
         # doing this so that it is consistent with all other datasets
@@ -26,12 +26,12 @@ class CIFARData(CIFAR10):
         # img = Image.fromarray(img)
         
         if self.transform is not None:
-            img = self.transform(image=img)['image']
+            img = self.transform(image=image)['image']
 
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return img, target
+        return image, target
 
 def get_data(train_transforms, test_transforms):
     train = datasets.CIFAR10('./data', train=True, download=True,transform=train_transforms)
