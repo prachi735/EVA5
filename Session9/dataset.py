@@ -28,6 +28,9 @@ class Cifar10AlbuDataset(CIFAR10):
         CIFAR10.__init__(self,root=root, train=train,
                          download=download, transform=transform)
 
+    def __len__(self):
+      return len(self.data)
+
     def __getitem__(self, index):
         image, label = self.data[index], self.targets[index]
 
