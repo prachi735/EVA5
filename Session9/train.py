@@ -36,4 +36,4 @@ def train(model, device, train_loader, optimizer, loss_fn) -> Tuple[float, float
         pbar.set_description(
             desc=f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={accuracy:0.2f}')
 
-        return accuracy, loss
+    return accuracy, loss
