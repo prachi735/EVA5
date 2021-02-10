@@ -10,7 +10,7 @@ def test(model, device, test_loader, loss_fn) -> Tuple[float, float]:
             data, target = data.to(device), target.to(device)
             output = model(data)
             # sum up batch loss
-            test_loss += loss_fn(output, target)
+            test_loss = loss_fn(output, target)
             # get the index of the max log-probability
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
