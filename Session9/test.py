@@ -1,7 +1,5 @@
 from typing import Tuple
 import torch
-import torch.nn.functional as F
-
 
 def test(model, device, test_loader, loss_fn) -> Tuple[float, float]:
     model.eval()
@@ -12,7 +10,7 @@ def test(model, device, test_loader, loss_fn) -> Tuple[float, float]:
             data, target = data.to(device), target.to(device)
             output = model(data)
             # sum up batch loss
-            test_loss += F.loss_fn(output, target, reduction='sum').item()
+            test_loss += loss_fn(output, target, reduction='sum').item()
             # get the index of the max log-probability
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
