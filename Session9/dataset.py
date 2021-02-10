@@ -25,7 +25,7 @@ import numpy as np
 
 class Cifar10AlbuDataset(CIFAR10):
     def __init__(self, root="~/data/cifar10", train=True, download=True, transform=None):
-        CIFAR10.__init__(root=root, train=train,
+        CIFAR10.__init__(self,root=root, train=train,
                          download=download, transform=transform)
 
     def __getitem__(self, index):
