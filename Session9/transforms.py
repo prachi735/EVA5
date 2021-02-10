@@ -15,11 +15,11 @@ def get_album_transforms(norm_mean, norm_std):
         A.RGBShift(r_shift_limit=15, g_shift_limit=15,
                    b_shift_limit=15, p=0.5),
         A.RandomBrightnessContrast(p=0.5),
-        A.Normalize(mean=norm_mean, std=norm_std, ),
+        A.Normalize(mean=norm_mean, std=norm_std ),
         ToTensorV2()
         
     ])
-    test_transform = A.Compose([A.Normalize(mean=norm_mean, std=norm_std, ),
+    test_transform = A.Compose([A.Normalize(mean=norm_mean, std=norm_std ),
                                 ToTensorV2()
                                 ])
     return train_transform, test_transform

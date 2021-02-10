@@ -1,7 +1,5 @@
-from torch.utils.data.dataset import Dataset
-from torchvision import datasets
+from torchvision.datasets import CIFAR10
 import torch
-from PIL import Image
 import numpy as np
 
 
@@ -25,9 +23,10 @@ import numpy as np
 #         return image, label
 
 
-class Cifar10AlbuDataset(datasets.CIFAR10):
+class Cifar10AlbuDataset(CIFAR10):
     def __init__(self, root="~/data/cifar10", train=True, download=True, transform=None):
-        super().__init__(root=root, train=train, download=download, transform=transform)
+        CIFAR10.__init__(root=root, train=train,
+                         download=download, transform=transform)
 
     def __getitem__(self, index):
         image, label = self.data[index], self.targets[index]
