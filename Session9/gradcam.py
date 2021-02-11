@@ -190,3 +190,16 @@ def visualize_cam(mask, img):
     result = result.div(result.max()).squeeze()
 
     return heatmap, result
+
+
+def get_gradcam(model_dict, image, normalized_image, verbose):
+
+    resnet_gradcam = GradCAM(model_dict, verbose)
+    mask, _ = resnet_gradcam(image)
+    heatmap, result = visualize_cam(mask, image)
+
+    gradcam_pp = GradCAMpp(model_dict, verbose)
+    mask_pp, _ = gradcam_pp(normalized_image)
+    heatmap_pp, result_pp = visualize_cam(mask_pp, normalized_image)
+
+    return heatmap, result, heatmap_pp, result_pp

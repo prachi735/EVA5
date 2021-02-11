@@ -27,3 +27,8 @@ def get_previous_model(model_path,device):
     model.load_state_dict(torch.load(model_path))
     return model.to(device)
 
+
+
+def get_learning_rate():
+    lr = 0.01
+    return lr
