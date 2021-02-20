@@ -16,7 +16,7 @@ def get_album_transforms(norm_mean, norm_std):
         A.CLAHE(clip_limit=2),
         A.RandomBrightnessContrast(),
         A.HueSaturationValue(p=0.3),
-        A.Cutout(num_holes=3, max_h_size=8, max_w_size=8,
+        A.Cutout(num_holes=1, max_h_size=8, max_w_size=8,
                fill_value=0, always_apply=False, p=0.5),
         A.Normalize(mean=norm_mean, std=norm_std ),
         ToTensorV2()
