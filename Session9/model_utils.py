@@ -11,24 +11,18 @@ def get_optimizer(model, lr=0.01,
     return optim.SGD(model.parameters(), lr=0.01,momentum=momentum, weight_decay=weight_decay)
 
 
-def get_scheduler(args, optimizer, datasets):
-    if args.scheduler == 'step':
-        scheduler = lr_scheduler.MultiStepLR(
-            optimizer, milestones=eval(args.milestones), gamma=args.lr_decay)
-    elif args.scheduler == 'poly':
-        total_step = (len(datasets['train']) / args.batch + 1) * args.epochs
-        scheduler = lr_scheduler.LambdaLR(
-            optimizer, lambda x: (1-x/total_step) ** args.power)
-    elif args.scheduler == 'plateau':
+def get_scheduler(optimizer, lr_policy):
+    if lr_policy == 'step':
+        scheduler = lr_scheduler.StepLR(
+            optimizer, gamma=0.1)
+    elif lr_policy == 'plateau':
         scheduler = lr_scheduler.ReduceLROnPlateau(
-            optimizer, mode='max', factor=args.lr_decay, patience=args.patience)
-    elif args.scheduler == 'constant':
-        scheduler = lr_scheduler.LambdaLR(optimizer, lambda x: 1)
-    elif args.scheduler == 'cosine':
-        scheduler = lr_scheduler.CosineAnnealingLR(
-            optimizer, args.T_max, args.min_lr)
+            optimizer, mode='min', factor=0.2, threshold=0.01, patience=5)
+    elif lr_policy == 'cosine':
+        scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+    # else:
+    #     return NotImplementedError('learning rate policy [%s] is not implemented', opt.lr_policy)
     return scheduler
-
 
 def get_loss_function():
     return nn.CrossEntropyLoss()
